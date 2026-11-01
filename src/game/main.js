@@ -58,6 +58,7 @@ import {session,updateSession} from '../session/session.js';
 import {installCreator} from '../creator/creator-ui.js';
 import {createStudio} from '../creator/studio.js';
 import {ReincarnationOpening} from '../cinematic/opening.js';
+import {WAKE_TIME} from '../cinematic/opening-script.js';
 import {matchingHair} from '../hair/catalog.js';
 import {HairThumbnails} from '../creator/hair-thumbnails.js';
 import {createGameMenu} from '../session/game-menu.js';
@@ -187,6 +188,9 @@ function saveAppearance(){
   updateSession({characterName:appearance.name,...(session.entry.name==='New life'?{name:appearance.name}:{}),level:progress.data.level});
 }
 function unlockAudio(){audio??=new (window.AudioContext||window.webkitAudioContext)();gameAudio.ensure();audio.resume();voices.warm();}
+// Continuing a save bypasses the creator's Begin button, so unlock on play input too.
+canvas.addEventListener('pointerdown',unlockAudio,{once:true});
+window.addEventListener('keydown',unlockAudio,{once:true});
 function enter(){
   saveAppearance();unlockAudio();voices.stop('preview');
   if(state.editing||session.entry.stage==='world'){state.editing=false;enterWorld();return;}
@@ -388,7 +392,11 @@ function updateCamera(dt){
 }
 function frame(dt){
   if(state.paused)return;
-  if(state.mode==='opening'){opening.update(dt,state.mute);gameAudio.update(opening.woken?player.position:avatar.root.position,camera,voices.busy('cinematic'));return;}
+  if(state.mode==='opening'){
+    // Keep the atmosphere positioned during the town shots, before gameplay starts.
+    if(opening.time>=WAKE_TIME)dayNight.update(dt,opening.position);
+    opening.update(dt,state.mute);gameAudio.update(opening.woken?player.position:avatar.root.position,camera,voices.busy('cinematic'));return;
+  }
   if(state.mode==='create'){
     elapsed+=dt;avatar.root.position.set(0,0,0);if(state.turn)creatorUI.controls.angle+=dt*.35;avatar.root.rotation.y=creatorUI.controls.angle;
     animator.update(dt,{speed:0,weapon:'unarmed'});wardrobe.update(dt);equipment.sword.visible=false;hairThumbnails.update(appearance);studio.update(camera,{...creatorUI.controls,closeup:state.closeup},dt);renderer.render(studio.scene,camera);return;
