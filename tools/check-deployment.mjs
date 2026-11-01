@@ -15,8 +15,12 @@ try{
   const page=await context.newPage();page.setDefaultTimeout(120000);
   page.on('pageerror',error=>errors.push(error.message));
   await page.goto(base.href);
+  console.log('Save menu loaded');
   await page.locator('#new-save').click();
   await page.waitForFunction(()=>window.gameDemo?.ready,null,{timeout:120000});
+  // Advance animation explicitly: CI checks loading and interactions, not GPU throughput.
+  await page.evaluate(()=>{gameDemo.renderer.setAnimationLoop(null);gameDemo.frame(1/60);});
+  console.log('Character creator loaded');
   const coins=await page.evaluate(()=>gameDemo.progress.data.coins);assert.equal(coins,50000);
   await page.screenshot({path:`${output}/creator.png`});
   const voice=await page.evaluate(async()=>{
@@ -24,22 +28,28 @@ try{
     return {samples:result?.pcm.length??0,rate:result?.sampleRate,error:gameDemo.voices.lastError};
   });
   assert.ok(voice.samples>2400,`runtime voice synthesis failed: ${voice.error}`);
+  console.log('Runtime voice generated');
   await page.locator('#enter').click();
   await page.waitForFunction(()=>gameDemo.state.mode==='opening');
   await page.evaluate(()=>{gameDemo.voices.setMuted(true);gameDemo.opening.finish();});
   await page.waitForFunction(()=>gameDemo.state.mode==='play');
-  await page.keyboard.down('w');await page.waitForTimeout(400);await page.keyboard.up('w');
+  await page.keyboard.down('w');await page.evaluate(()=>{for(let i=0;i<8;i++)gameDemo.frame(.05);});await page.keyboard.up('w');
   await page.screenshot({path:`${output}/world.png`});
+  console.log('Opening and world loaded');
   // Prove the hosted save path retains a spent balance instead of re-granting 5g.
   await page.evaluate(()=>{gameDemo.progress.data.coins=49955;gameDemo.saveSession();});
   await page.reload();
   await page.locator('[data-continue-save]').click();
   await page.waitForFunction(()=>window.gameDemo?.ready,null,{timeout:120000});
+  await page.evaluate(()=>gameDemo.renderer.setAnimationLoop(null));
   assert.equal(await page.evaluate(()=>gameDemo.progress.data.coins),49955);
+  console.log('Saved balance restored');
   await page.goto(new URL('creatures.html',base).href);
   await page.waitForFunction(()=>window.creaturePreview?.ready,null,{timeout:120000});
+  await page.evaluate(()=>creaturePreview.renderer.setAnimationLoop(null));
   await page.locator('#goblins').click();
   await page.locator('#motion').selectOption('run');
+  await page.evaluate(()=>creaturePreview.frame(.05));
   await page.screenshot({path:`${output}/goblins.png`});
   await page.goto(new URL('validation.html',base).href);
   await page.waitForFunction(()=>document.getElementById('iou')?.textContent.endsWith('%'));
