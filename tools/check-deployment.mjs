@@ -41,6 +41,9 @@ try{
   await page.locator('#goblins').click();
   await page.locator('#motion').selectOption('run');
   await page.screenshot({path:`${output}/goblins.png`});
+  await page.goto(new URL('validation.html',base).href);
+  await page.waitForFunction(()=>document.getElementById('iou')?.textContent.endsWith('%'));
+  await page.waitForFunction(()=>[...document.images].every(image=>image.complete&&image.naturalWidth>0));
   assert.deepEqual(errors,[]);assert.deepEqual(failedRequests,[]);assert.deepEqual([...new Set(outsideBase)],[]);
   const result={url:base.href,startingCoins:coins,savedCoins:49955,voice,errors,failedRequests,outsideBase};
   await writeFile(`${output}/result.json`,JSON.stringify(result,null,2));console.log(JSON.stringify(result,null,2));
