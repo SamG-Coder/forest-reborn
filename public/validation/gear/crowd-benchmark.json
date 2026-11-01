@@ -1,0 +1,115 @@
+{
+  "results": [
+    {
+      "active": 100,
+      "visible": 100,
+      "lodCounts": [
+        0,
+        0,
+        100
+      ],
+      "cells": 100,
+      "culledCells": 0,
+      "triangles": 83900,
+      "paletteBytes": 737280,
+      "cpuSkeletons": 0,
+      "liveClothInstances": 0,
+      "frames": 601,
+      "meanFrameMs": 16.66405990015647,
+      "p95FrameMs": 18,
+      "averageFPS": 60.00938582743635,
+      "drawCalls": 2,
+      "renderedTriangles": 83902,
+      "hardware": "ANGLE (NVIDIA, NVIDIA GeForce RTX 5080 (0x00002C02) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "resolution": [
+        1190,
+        1000
+      ],
+      "animationSeconds": 12.089399999998545
+    },
+    {
+      "active": 1000,
+      "visible": 1000,
+      "lodCounts": [
+        0,
+        0,
+        1000
+      ],
+      "cells": 100,
+      "culledCells": 0,
+      "triangles": 839000,
+      "paletteBytes": 737280,
+      "cpuSkeletons": 0,
+      "liveClothInstances": 0,
+      "frames": 601,
+      "meanFrameMs": 16.666056572386807,
+      "p95FrameMs": 18.100000001490116,
+      "averageFPS": 60.00219641980888,
+      "drawCalls": 2,
+      "renderedTriangles": 839002,
+      "hardware": "ANGLE (NVIDIA, NVIDIA GeForce RTX 5080 (0x00002C02) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "resolution": [
+        1190,
+        1000
+      ],
+      "animationSeconds": 22.60580000000441
+    },
+    {
+      "active": 5000,
+      "visible": 5000,
+      "lodCounts": [
+        0,
+        0,
+        5000
+      ],
+      "cells": 100,
+      "culledCells": 0,
+      "triangles": 4195000,
+      "paletteBytes": 737280,
+      "cpuSkeletons": 0,
+      "liveClothInstances": 0,
+      "frames": 601,
+      "meanFrameMs": 16.667054908495775,
+      "p95FrameMs": 18.099999994039536,
+      "averageFPS": 59.9986023619725,
+      "drawCalls": 2,
+      "renderedTriangles": 4195002,
+      "hardware": "ANGLE (NVIDIA, NVIDIA GeForce RTX 5080 (0x00002C02) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "resolution": [
+        1190,
+        1000
+      ],
+      "animationSeconds": 33.1228000000042
+    }
+  ],
+  "ground": {
+    "active": 5000,
+    "visible": 1664,
+    "lodCounts": [
+      156,
+      558,
+      950
+    ],
+    "cells": 100,
+    "culledCells": 70,
+    "triangles": 2736892,
+    "paletteBytes": 737280,
+    "cpuSkeletons": 0,
+    "liveClothInstances": 0,
+    "frames": 301,
+    "meanFrameMs": 16.67109634551495,
+    "p95FrameMs": 18,
+    "averageFPS": 59.984057393383814,
+    "drawCalls": 4,
+    "renderedTriangles": 2736894,
+    "hardware": "ANGLE (NVIDIA, NVIDIA GeForce RTX 5080 (0x00002C02) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "resolution": [
+      1190,
+      1000
+    ],
+    "animationSeconds": 39.7732000000027
+  },
+  "animationChangesCanvas": true,
+  "errors": [],
+  "scope": "Headless Chromium WebGL2 D3D11, one outfit, vertex-colour LODs, GPU-skinned idle/walk/run. No NPC AI, network, shadows or live cloth."
+}

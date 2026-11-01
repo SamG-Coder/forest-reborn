@@ -1,0 +1,58 @@
+{
+  "metals": [
+    {
+      "id": "look-v1-cn3",
+      "resource": "iron",
+      "color": "798388",
+      "texture": "http://127.0.0.1:5173/assets/gear/engraved-basecolor.png"
+    },
+    {
+      "id": "look-v1-pa7",
+      "resource": "steel",
+      "color": "a1b7cc",
+      "texture": "http://127.0.0.1:5173/assets/gear/engraved-basecolor.png"
+    },
+    {
+      "id": "look-v1-11xb",
+      "resource": "copper",
+      "color": "c77951",
+      "texture": "http://127.0.0.1:5173/assets/gear/engraved-basecolor.png"
+    },
+    {
+      "id": "look-v1-1ekf",
+      "resource": "bronze",
+      "color": "ac883f",
+      "texture": "http://127.0.0.1:5173/assets/gear/engraved-basecolor.png"
+    },
+    {
+      "id": "look-v1-1r7j",
+      "resource": "silver",
+      "color": "e3e8ed",
+      "texture": "http://127.0.0.1:5173/assets/gear/engraved-basecolor.png"
+    },
+    {
+      "id": "look-v1-23un",
+      "resource": "mithril",
+      "color": "63d4cf",
+      "texture": "http://127.0.0.1:5173/assets/gear/engraved-basecolor.png"
+    }
+  ],
+  "recipe": "look-v1-aj73",
+  "slotsOff": [
+    "legs",
+    "clothes",
+    "shoes",
+    "body"
+  ],
+  "maskRestored": true,
+  "labOutfitCannotBypassProgression": true,
+  "walking": true,
+  "jumpLanding": true,
+  "stats": {
+    "items": 1,
+    "clothParticles": 0,
+    "maxStretch": 1,
+    "bodyTriangles": 24224
+  },
+  "errors": []
+}

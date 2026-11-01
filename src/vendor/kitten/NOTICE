@@ -1,0 +1,14 @@
+KittenTTS JS (experimental) includes code derived from:
+https://github.com/KittenML/KittenTTS
+
+Original project copyright:
+Copyright KittenML contributors.
+
+JavaScript/web porting changes and repository wiring:
+Copyright 2026 Joonas Pihlajamaa and contributors.
+
+This distribution is provided under the Apache License, Version 2.0.
+See LICENSE in this directory.
+
+Model artifacts, voices, and related assets may be distributed under
+separate terms. See the corresponding model cards and upstream product docs.

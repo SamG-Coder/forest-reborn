@@ -1,0 +1,115 @@
+{
+  "model": "Depth Anything V2 Small",
+  "repository": "onnx-community/depth-anything-v2-small",
+  "revision": "4472b7362082ad9968fee890ca0f1e5aca36b93d",
+  "weightsSHA256": "afb6a5c28f3b6bf1618c6e43f02073ef9dfdc70e937502d51603e57b0a1df10c",
+  "sourceSHA256": "e18aa321c1dd3fe13200e680f74914e6ffdb938f1a53610e35b0a04fd2cb3cf5",
+  "runtime": "onnxruntime 1.31.1",
+  "provider": [
+    "CPUExecutionProvider"
+  ],
+  "preprocess": "RGB bicubic, shorter side 518, dimensions multiple of 14; /255 then ImageNet mean/std",
+  "meaning": "Relative inverse depth. Larger values are closer; not metric depth or calibrated multi-view depth.",
+  "views": {
+    "sheet": {
+      "crop": [
+        0,
+        0,
+        1774,
+        887
+      ],
+      "inputShape": [
+        1,
+        3,
+        518,
+        1036
+      ],
+      "outputShape": [
+        887,
+        1774
+      ],
+      "seconds": 0.6541825000022072,
+      "rawMin": -0.10873369127511978,
+      "rawMax": 5.285750865936279,
+      "displayPercentiles": [
+        0.6125316590070724,
+        5.003127169609069
+      ]
+    },
+    "front": {
+      "crop": [
+        35,
+        10,
+        565,
+        805
+      ],
+      "inputShape": [
+        1,
+        3,
+        784,
+        518
+      ],
+      "outputShape": [
+        795,
+        530
+      ],
+      "seconds": 0.3794123999978183,
+      "rawMin": 0.09200415015220642,
+      "rawMax": 6.399335861206055,
+      "displayPercentiles": [
+        0.5441133654117585,
+        5.689170560836792
+      ]
+    },
+    "threeQuarter": {
+      "crop": [
+        620,
+        10,
+        1140,
+        805
+      ],
+      "inputShape": [
+        1,
+        3,
+        798,
+        518
+      ],
+      "outputShape": [
+        795,
+        520
+      ],
+      "seconds": 0.3816905999992741,
+      "rawMin": -0.2358953058719635,
+      "rawMax": 5.690068244934082,
+      "displayPercentiles": [
+        0.15093106046319008,
+        5.625721554756165
+      ]
+    },
+    "profile": {
+      "crop": [
+        1175,
+        10,
+        1774,
+        805
+      ],
+      "inputShape": [
+        1,
+        3,
+        686,
+        518
+      ],
+      "outputShape": [
+        795,
+        599
+      ],
+      "seconds": 0.318559200000891,
+      "rawMin": -0.12586964666843414,
+      "rawMax": 4.76382303237915,
+      "displayPercentiles": [
+        0.2598759174346924,
+        4.749325103759766
+      ]
+    }
+  }
+}

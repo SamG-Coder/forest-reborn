@@ -1,0 +1,17 @@
+{
+  "tool": "Built-in image_gen",
+  "assets": [
+    {
+      "key": "castle-limestone",
+      "prompt": "Use case: stylized-concept. Asset type: seamless tileable PBR albedo texture for a cel shaded 3D anime fantasy castle. A straight-on flat orthographic close-up of medieval pale cool grey limestone ashlar masonry, irregular long hand-cut rectangular blocks in staggered courses, gently worn bevelled edges, restrained warm ivory variation and muted blue grey joints, a few tiny moss accents, attractive hand-painted anime background art. Fill the entire square image with stonework. Even unlit diffuse colour, no perspective, no directional highlights, no cast shadows, no vignette, no architecture silhouette, no text, no border. Seamless repeat on all four edges. The blocks are substantial castle masonry, not little house bricks. High detail but clean broad colour shapes, 1024 by 1024 opaque material swatch."
+    },
+    {
+      "key": "castle-slate",
+      "prompt": "Use case: stylized-concept. Asset type: seamless tileable albedo texture for a 3D anime fantasy castle roof. Straight-on orthographic flat swatch of overlapping old blue slate roof shingles in staggered horizontal rows. Deep desaturated blue teal, muted steel blue edge highlights, irregular hand-cut shingle widths, a few chipped corners, refined painted anime background aesthetic. All shingles point downward consistently. Uniform diffuse light with subtle contact darkening only, no directional lighting, no perspective, no shadow from another object, no text, no border. Fill entire square edge to edge, perfect repeat all four edges. 1024 by 1024 opaque."
+    },
+    {
+      "key": "castle-bedrock",
+      "prompt": "Use case: stylized-concept. Asset type: seamless tiling albedo texture for rocky cliffs under a fantasy castle in a 3D cel shaded anime game. Flat orthographic rock material swatch only. Weathered cool grey limestone bedrock with broad angular fractured plates, stratified stone lines, slightly warmer dust caught in crevices and very sparse muted olive moss. Hand-painted anime landscape style, readable large forms, subtle fine cracks. Uniform diffuse light, no cast shadows, no perspective, no landscape or castle, no text, no borders, no vignette. Seamless all four edges, opaque square 1024 by 1024."
+    }
+  ]
+}

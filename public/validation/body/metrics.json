@@ -1,0 +1,67 @@
+{
+  "baseline": {
+    "front": {
+      "silhouetteIoU": 0.975557922885437,
+      "meanContourErrorPixels": 0.9055331675930407,
+      "heldOut": false
+    },
+    "back": {
+      "silhouetteIoU": 0.9472413793103448,
+      "meanContourErrorPixels": 1.920518793623163,
+      "heldOut": false
+    },
+    "left": {
+      "silhouetteIoU": 0.9780458358044565,
+      "meanContourErrorPixels": 0.8838626081182757,
+      "heldOut": false
+    },
+    "top": {
+      "silhouetteIoU": 0.7940871476865006,
+      "meanContourErrorPixels": 7.822383547451225,
+      "heldOut": false
+    },
+    "front-quarter": {
+      "silhouetteIoU": 0.796898384123197,
+      "meanContourErrorPixels": 7.858577944004781,
+      "heldOut": true
+    },
+    "rear-quarter": {
+      "silhouetteIoU": 0.6167657482016461,
+      "meanContourErrorPixels": 13.900220387344078,
+      "heldOut": true
+    }
+  },
+  "depth": {
+    "front": {
+      "silhouetteIoU": 0.9753569545674423,
+      "meanContourErrorPixels": 0.9129501002068867,
+      "heldOut": false
+    },
+    "back": {
+      "silhouetteIoU": 0.9471179606886124,
+      "meanContourErrorPixels": 1.9250020704961137,
+      "heldOut": false
+    },
+    "left": {
+      "silhouetteIoU": 0.9800484507399846,
+      "meanContourErrorPixels": 0.8063949757887442,
+      "heldOut": false
+    },
+    "top": {
+      "silhouetteIoU": 0.7854732444158766,
+      "meanContourErrorPixels": 8.343221192809548,
+      "heldOut": false
+    },
+    "front-quarter": {
+      "silhouetteIoU": 0.8019206513324925,
+      "meanContourErrorPixels": 7.655171511961172,
+      "heldOut": true
+    },
+    "rear-quarter": {
+      "silhouetteIoU": 0.6093391441849703,
+      "meanContourErrorPixels": 14.018512475764409,
+      "heldOut": true
+    }
+  },
+  "meaning": "Fixed nominal cameras, uniform scale/translation only. Red=reference-only, blue=mesh-only. IoU measures silhouette, not anatomical accuracy. Diagonal images were excluded from fitting but themselves contain camera/pose drift."
+}

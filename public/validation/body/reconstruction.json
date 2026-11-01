@@ -1,0 +1,194 @@
+{
+  "method": "Silhouette-constrained rounded surface with Depth Anything V2 front/back relief; side/top thickness calibration",
+  "fitViews": [
+    "front",
+    "back",
+    "left",
+    "top"
+  ],
+  "heldOutViews": [
+    "front-quarter",
+    "rear-quarter"
+  ],
+  "depthStrength": 0.3,
+  "calibration": {
+    "front": {
+      "alignment": [
+        [
+          0.996960461139679,
+          0.0,
+          3.829787254333496
+        ],
+        [
+          0.0,
+          0.996960461139679,
+          1.042553186416626
+        ]
+      ],
+      "originalBounds": [
+        200,
+        14,
+        1332,
+        1001
+      ]
+    },
+    "back": {
+      "alignment": [
+        [
+          1.0,
+          0.0,
+          3.0
+        ],
+        [
+          0.0,
+          1.0,
+          2.0
+        ]
+      ],
+      "originalBounds": [
+        198,
+        13,
+        1332,
+        997
+      ]
+    },
+    "left": {
+      "alignment": [
+        [
+          1.0030580759048462,
+          0.0,
+          1.1620794534683228
+        ],
+        [
+          0.0,
+          1.0030580759048462,
+          0.9571865200996399
+        ]
+      ],
+      "originalBounds": [
+        679,
+        14,
+        851,
+        995
+      ]
+    },
+    "top": {
+      "alignment": [
+        [
+          0.7726962566375732,
+          0.0,
+          174.95562744140625
+        ],
+        [
+          0.0,
+          0.7726962566375732,
+          165.8320770263672
+        ]
+      ],
+      "originalBounds": [
+        35,
+        357,
+        1500,
+        619
+      ]
+    },
+    "front-quarter": {
+      "alignment": [
+        [
+          0.9919354915618896,
+          0.0,
+          12.641129493713379
+        ],
+        [
+          0.0,
+          0.9919354915618896,
+          3.096774101257324
+        ]
+      ],
+      "originalBounds": [
+        327,
+        12,
+        1226,
+        1004
+      ]
+    },
+    "rear-quarter": {
+      "alignment": [
+        [
+          1.0051072835922241,
+          0.0,
+          1.6057201623916626
+        ],
+        [
+          0.0,
+          1.0051072835922241,
+          1.933605670928955
+        ]
+      ],
+      "originalBounds": [
+        317,
+        13,
+        1155,
+        992
+      ]
+    }
+  },
+  "withDepth": {
+    "vertices": 22502,
+    "triangles": 45000,
+    "watertight": true,
+    "componentsBeforeCleanup": 5,
+    "boundsMetres": [
+      [
+        -1.017110517162016,
+        -0.0011972381251445408,
+        -0.15633496231229715
+      ],
+      [
+        1.0171655756421727,
+        1.790240704829819,
+        0.15482138304884022
+      ]
+    ],
+    "uv": {
+      "atlasSize": [
+        3000,
+        3271
+      ],
+      "uvVertices": 26605,
+      "charts": 295,
+      "referenceImagesUsedAsTexture": false
+    },
+    "meanReliefPixels": 2.6982350218733173,
+    "maxReliefPixels": 15.428600345462828
+  },
+  "withoutDepth": {
+    "vertices": 22502,
+    "triangles": 45000,
+    "watertight": true,
+    "componentsBeforeCleanup": 2,
+    "boundsMetres": [
+      [
+        -1.0172687964322387,
+        -0.0011959918048477117,
+        -0.1563215464418575
+      ],
+      [
+        1.0171655756421727,
+        1.790244079934332,
+        0.1539281976482142
+      ]
+    ],
+    "uv": {
+      "atlasSize": [
+        2865,
+        2937
+      ],
+      "uvVertices": 26687,
+      "charts": 283,
+      "referenceImagesUsedAsTexture": false
+    },
+    "meanReliefPixels": 0.0,
+    "maxReliefPixels": 0.0
+  }
+}

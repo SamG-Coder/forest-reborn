@@ -1,0 +1,23 @@
+[
+  {
+    "level": 0,
+    "triangles": 6000,
+    "vertices": 3128,
+    "nearestSourceVertexMaxDistance": 0.055304936260750955,
+    "note": "Distance to nearest source vertex is not a surface-error bound."
+  },
+  {
+    "level": 1,
+    "triangles": 1799,
+    "vertices": 973,
+    "nearestSourceVertexMaxDistance": 0.06854263243853922,
+    "note": "Distance to nearest source vertex is not a surface-error bound."
+  },
+  {
+    "level": 2,
+    "triangles": 839,
+    "vertices": 452,
+    "nearestSourceVertexMaxDistance": 0.04016448509147963,
+    "note": "Distance to nearest source vertex is not a surface-error bound."
+  }
+]

@@ -1,0 +1,56 @@
+{
+  "alignment": "Orthographic; uniform 430px head height, centred silhouette bounding box; no nonrigid image warp.",
+  "scope": "Cranial silhouette only, excluding ears and neck. Reference masks use recorded manual trim annotations. Interior features and texture similarity are not scored.",
+  "depth": "Estimated from front/profile contours. Not measured or uniquely recovered depth.",
+  "thirdViewCameraDegrees": 20,
+  "baselineThirdViewCameraDegrees": 45,
+  "crossSectionExponent": 0.15,
+  "validation": "All three views used for fitting. Camera and shape jointly fitted for third view; scores are training-fit errors, not independent reconstruction accuracy.",
+  "views": {
+    "front": {
+      "baseline": {
+        "silhouetteIoU": 0.8828232173194153,
+        "meanBoundaryErrorPx": 10.838324157191476,
+        "p95BoundaryErrorPx": 20.09975124224178,
+        "normalizedMeanErrorPercentOfHeadHeight": 2.520540501672436
+      },
+      "fitted": {
+        "silhouetteIoU": 0.9910481470074941,
+        "meanBoundaryErrorPx": 0.7357042355068079,
+        "p95BoundaryErrorPx": 2.0,
+        "normalizedMeanErrorPercentOfHeadHeight": 0.17109400825739718
+      },
+      "usedForFit": true
+    },
+    "threeQuarter": {
+      "baseline": {
+        "silhouetteIoU": 0.9313061186707396,
+        "meanBoundaryErrorPx": 6.038762619592602,
+        "p95BoundaryErrorPx": 16.00780488547035,
+        "normalizedMeanErrorPercentOfHeadHeight": 1.4043633999052563
+      },
+      "fitted": {
+        "silhouetteIoU": 0.9311199207135779,
+        "meanBoundaryErrorPx": 6.0492347869307785,
+        "p95BoundaryErrorPx": 18.439088914585774,
+        "normalizedMeanErrorPercentOfHeadHeight": 1.4067987876583206
+      },
+      "usedForFit": true
+    },
+    "profile": {
+      "baseline": {
+        "silhouetteIoU": 0.772375594225653,
+        "meanBoundaryErrorPx": 21.103804202404024,
+        "p95BoundaryErrorPx": 40.03623166085916,
+        "normalizedMeanErrorPercentOfHeadHeight": 4.907861442419541
+      },
+      "fitted": {
+        "silhouetteIoU": 0.9932867132867133,
+        "meanBoundaryErrorPx": 0.5834692878769594,
+        "p95BoundaryErrorPx": 1.0,
+        "normalizedMeanErrorPercentOfHeadHeight": 0.13569053206440918
+      },
+      "usedForFit": true
+    }
+  }
+}

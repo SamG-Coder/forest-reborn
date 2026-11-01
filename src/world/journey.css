@@ -1,0 +1,8 @@
+.journey-panel {width:min(940px,92vw);left:50%;right:auto;transform:translateX(-50%);z-index:35}
+.journey-cards {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:22px 0}
+.journey-card {display:flex;flex-direction:column;gap:12px;padding:22px;background:linear-gradient(150deg,#2b4749,#162d35);border:1px solid #577479;border-radius:9px}
+.journey-card h3 {font-size:25px;margin:0;color:#f3dfb2}
+.journey-card p {font-size:16px;line-height:1.6;flex:1;color:#d2dcd6}
+.journey-symbol {font-size:58px;color:#d9bd7c;line-height:1.15;border-bottom:1px solid #5e6c62;padding-bottom:15px}
+.journey-status {color:#f1d28e;min-height:22px;padding:0 24px}
+@media(max-width:760px){.journey-cards{grid-template-columns:1fr}.journey-card{padding:16px}.journey-symbol{display:none}}

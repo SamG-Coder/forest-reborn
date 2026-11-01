@@ -1,0 +1,5 @@
+{
+  "provider": "Built-in image generation",
+  "asset": "public/assets/world/berry-bush.png",
+  "prompt": "A game-ready transparent-background foliage texture for a 3D anime fantasy MMO. One complete LOW WIDE forest berry bush, front orthographic view, isolated on full transparency. Dense overlapping clusters of small serrated rich green leaves on fine woody branching stems, many clearly visible red raspberry-like berries and a few burgundy berries, hand-painted anime background art with crisp clean silhouettes and restrained cel-shaded highlights. Natural asymmetrical spreading bush silhouette, approximately twice as wide as tall. Foliage fills most of image while retaining transparent irregular gaps between leaf clusters. No ground, no grass, no sky, no shadow cast outside the plant, no text, no border, no panel, no pot. Painterly detailed leaves that remain readable at medium game distance. Render RGBA alpha cutout, high resolution."
+}

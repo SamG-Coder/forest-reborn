@@ -1,0 +1,68 @@
+{
+  "cloth": {
+    "size": [
+      1024,
+      1024
+    ],
+    "normalConvention": "OpenGL +Y",
+    "source": "source/cloth.png",
+    "heightMethod": "approximate luminance microheight; not a geometry bake",
+    "basecolorEdgeError": 0.0,
+    "normalUnitLengthMaxError": 2.220446049250313e-16
+  },
+  "leather": {
+    "size": [
+      1024,
+      1024
+    ],
+    "normalConvention": "OpenGL +Y",
+    "source": "source/leather.png",
+    "heightMethod": "approximate luminance microheight; not a geometry bake",
+    "basecolorEdgeError": 0.0,
+    "normalUnitLengthMaxError": 2.220446049250313e-16
+  },
+  "mail": {
+    "size": [
+      1024,
+      1024
+    ],
+    "normalConvention": "OpenGL +Y",
+    "source": "source/mail.png",
+    "heightMethod": "approximate luminance microheight; not a geometry bake",
+    "basecolorEdgeError": 0.0,
+    "normalUnitLengthMaxError": 2.220446049250313e-16
+  },
+  "iron": {
+    "size": [
+      1024,
+      1024
+    ],
+    "normalConvention": "OpenGL +Y",
+    "source": "source/iron.png",
+    "heightMethod": "approximate luminance microheight; not a geometry bake",
+    "basecolorEdgeError": 0.0,
+    "normalUnitLengthMaxError": 2.220446049250313e-16
+  },
+  "brocade": {
+    "size": [
+      1024,
+      1024
+    ],
+    "normalConvention": "OpenGL +Y",
+    "source": "source/brocade.png",
+    "heightMethod": "approximate luminance microheight; not a geometry bake",
+    "basecolorEdgeError": 0.0,
+    "normalUnitLengthMaxError": 2.220446049250313e-16
+  },
+  "engraved": {
+    "size": [
+      1024,
+      1024
+    ],
+    "normalConvention": "OpenGL +Y",
+    "source": "source/engraved.png",
+    "heightMethod": "approximate luminance microheight; not a geometry bake",
+    "basecolorEdgeError": 0.0,
+    "normalUnitLengthMaxError": 2.220446049250313e-16
+  }
+}

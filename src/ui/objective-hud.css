@@ -1,0 +1,19 @@
+/* One flow layout owns every right-side panel; no competing absolute tops. */
+#hud .objective-rail{position:absolute;right:20px;top:20px;bottom:145px;width:296px;display:flex;flex-direction:column;gap:10px;overflow:auto;scrollbar-width:thin;pointer-events:auto}
+#hud .objective-rail>.minimap-frame,#hud .objective-rail>.quest-tracker,#hud .objective-rail>.world-event-box{position:relative;inset:auto;box-sizing:border-box;width:100%;max-width:none;margin:0;flex-shrink:0}
+#hud .objective-rail .minimap-frame canvas.minimap{width:202px;height:202px}
+#hud .objective-rail .map-legend canvas{width:20px;height:20px;margin:0;border:0;border-radius:0;box-shadow:none;flex:none}
+#hud .quest-tracker:before{content:none}
+#hud .objective-rail .quest-tracker{display:block;padding:13px 15px;font-size:14px}
+.tracker-heading{display:flex;align-items:center;justify-content:space-between;color:#efd295}.tracker-heading>b{font:20px Georgia}
+#hud .tracker-open{padding:4px 8px;font-size:12px}
+.tracked-objective{padding:13px 0;border-top:1px solid #c4a87338;margin-top:10px}.tracked-objective .eyebrow{font-size:10px;letter-spacing:.12em;color:#bda677}
+#hud .tracker-title{display:block;border:0;background:none;box-shadow:none;padding:2px 0;color:#f4e3bd;text-align:left;font:17px Georgia;line-height:1.4}
+.tracked-objective p{margin:4px 0!important;line-height:1.4!important}.tracked-objective small.muted{font-size:12px;color:#b4c6bf}
+#hud .objective-rail .world-event-box{border-left:3px solid #ac946e;background:#273936ed;font-size:13px}
+.quest-objective{padding:18px;background:#102723;border-left:3px solid #d2b278;margin:18px 0}.quest-objective h4{font-size:18px;margin:5px 0}.quest-objective p{margin:4px 0!important}.quest-objective .progress-meter{margin-top:14px}
+.quest-route{display:grid;grid-template-columns:1fr 1fr;gap:14px;font-size:14px}.quest-route small{display:block;color:#aebfb4}.quest-route strong{color:#ebdab8}
+.journey-steps{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0}.journey-steps span{padding:6px 9px;background:#152822;border:1px solid #87967b50;font-size:12px;color:#9fae9d}.journey-steps .done{color:#b2d39d}.journey-steps .current{color:#f4d695;border-color:#d1b37a}
+.mount-shop{margin:18px 0;border:1px solid #a8916855;padding:14px}.mount-shop summary{font:21px Georgia;color:#f0d29d;cursor:pointer}.mount-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.mount-card{padding:10px;background:#162d28}.mount-portrait{width:100%;aspect-ratio:1;object-fit:contain;background:radial-gradient(#466459,#132923);border-radius:4px}.mount-card h3{margin:8px 0}.mount-card p{font-size:14px!important;line-height:1.5!important}
+@media(max-width:1050px){#hud .objective-rail{width:246px;top:215px;bottom:140px;right:10px}#hud .objective-rail .minimap-frame{display:none}#hud .objective-rail .world-event-box{display:block}}
+@media(max-width:720px){#hud .objective-rail{display:none}.quest-route{grid-template-columns:1fr}}

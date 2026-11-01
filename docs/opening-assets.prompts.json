@@ -1,0 +1,42 @@
+{
+  "provider": "image_gen",
+  "purpose": "Generated albedo and interface art. Road reflections, rainfall, geometry and animation are rendered in Three.js.",
+  "assets": [
+    {
+      "name": "road",
+      "prompt": "Seamless tileable texture for a 3D anime game, dark blue-grey urban asphalt road surface. Restrained hand painted stylized appearance, fine aggregate grains, shallow subtle dark cracks, low contrast, uniformly lit flat diffuse albedo only. No street markings, no perspective, no objects, no text, no border, no specular highlights. Rain-wet look will be added by a shader so do not paint bright puddles. Square opaque swatch, perfectly repeating edges.",
+      "installed": "public/assets/modern/asphalt.png",
+      "source": "C:\\Users\\samue\\.codex\\generated_images\\01a195cc-d1a4-7fc3-9159-57d6c45900d2\\exec-3e9ff194-531a-45a6-a000-d4605a44b51e.png"
+    },
+    {
+      "name": "cotton",
+      "prompt": "Seamless tileable albedo texture for an anime 3D game. Plain WHITE cotton jersey T-shirt material, soft smooth lightweight fabric, very subtle nearly invisible fine cotton grain. Overall colour warm white RGB around 238,236,230, very low contrast detail with no dark grey areas. Flat evenly lit square material swatch filling entire image. No sweater knit, no chunky weave, no ribbing, no folds, no shadows, no seams, no garments, no buttons, no logos, no words. It should read as a clean white T-shirt at normal viewing distance, not as a knitted jumper. Perfect seamless tiling all edges. Opaque.",
+      "installed": "public/assets/modern/white-cotton.png",
+      "source": "C:\\Users\\samue\\.codex\\generated_images\\01a195cc-d1a4-7fc3-9159-57d6c45900d2\\exec-966a357a-e137-4d7f-85df-d4da38a7de2b.png"
+    },
+    {
+      "name": "denim",
+      "prompt": "A seamless tileable albedo texture of medium blue lightly washed cotton denim, for casual everyday jeans in a high-quality anime 3D game. Large flat perfectly evenly lit material swatch covering the whole image. Predominantly muted medium blue (approx RGB 95 128 157), subtle pale fading, extremely fine low-contrast diagonal twill threads. Restrained hand-painted anime treatment. No dramatic noise, no holes, no rips, no distressing, no seams or pockets, no garment silhouette, no highlights or shadows, no text, no border. Exact seamless repeating edges in both directions. Opaque square.",
+      "installed": "public/assets/modern/casual-denim.png",
+      "source": "C:\\Users\\samue\\.codex\\generated_images\\01a195cc-d1a4-7fc3-9159-57d6c45900d2\\exec-88d97485-44b5-4e43-b0a5-74967a06cb1a.png"
+    },
+    {
+      "name": "windows",
+      "prompt": "Square texture asset of a single apartment window GLASS PANE seen straight-on from outside at night for an anime 3D street scene. Only the rectangular glass fills the image, no frame, no mullions, no surrounding wall. Behind the glass: muted amber light, soft ivory curtains pushed partly to the sides, a dark indistinct room interior and subtle bluish exterior reflections. Restrained hand-painted anime background art, low detail readable at a distance, no people, no text, no signs. Lighting stays subdued warm honey rather than bright white. Orthographic front view, square opaque texture.",
+      "installed": "public/assets/modern/window-pane.png",
+      "source": "C:\\Users\\samue\\.codex\\generated_images\\01a195cc-d1a4-7fc3-9159-57d6c45900d2\\exec-b53e3eca-1c7f-40bf-ae11-36d4e10aa94f.png"
+    },
+    {
+      "name": "hair",
+      "prompt": "A seamless grayscale albedo material for stylized ANIME hair clumps in a 3D fantasy character. Fine flowing hair fibers run exactly vertically from top to bottom. Mostly smooth medium silver-gray fill, delicate very low-contrast strand lines, a few wider soft tonal ribbons. Texture only, flat evenly lit orthographic square swatch filling the frame. NO hair silhouette, NO head, NO face, NO curls, NO tied hairstyles, NO sharp white shine, NO painted specular highlight, NO directional lighting, NO black borders, NO text. Hair color and cel-shaded highlights will be provided by the shader. Seamless edges, opaque.",
+      "installed": "public/assets/hair/fibres-neutral.png",
+      "source": "C:\\Users\\samue\\.codex\\generated_images\\01a195cc-d1a4-7fc3-9159-57d6c45900d2\\exec-f4d9931c-0506-4fa9-bf9f-8a9cbed51dbf.png"
+    },
+    {
+      "name": "menu",
+      "prompt": "Wide landscape background painting for the main menu of a 3D anime fantasy RPG called Forest Reborn. No text or logos anywhere. A grounded, welcoming medieval woodland town at early morning: small cream plaster and dark timber houses with muted teal slate roofs, a cobbled path through a grassy village square, a simple stone well, warm windows, leafy trees and wooded hills fading into pale morning mist. Japanese anime background art, hand painted fine architectural detail, graceful natural colors, cinematic depth, sun filtering through trees. No castle dominating the view, no oversized fantasy props, no people, no UI. The left third has a large shadowed tree and dark foliage with quiet negative space suitable for a title; the right third has a subdued softly misted wooded hillside and roofs where a dark menu panel can be overlaid. The central third shows the beautiful town and winding path clearly. 16:9 wide composition, polished anime game key art, restrained gold-green and cool teal palette, soft morning atmosphere. Fill the entire frame, no border.",
+      "installed": "public/assets/menu/mosswake-dawn.png",
+      "source": "C:\\Users\\samue\\.codex\\generated_images\\01a195cc-d1a4-7fc3-9159-57d6c45900d2\\exec-69499905-d9e3-4e17-a02d-78b8e3fc9c2c.png"
+    }
+  ]
+}

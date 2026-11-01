@@ -1,0 +1,97 @@
+{
+  "model": "Depth Anything V2 Small",
+  "repository": "onnx-community/depth-anything-v2-small",
+  "revision": "4472b7362082ad9968fee890ca0f1e5aca36b93d",
+  "weightsSHA256": "afb6a5c28f3b6bf1618c6e43f02073ef9dfdc70e937502d51603e57b0a1df10c",
+  "runtime": "1.31.1",
+  "provider": [
+    "CPUExecutionProvider"
+  ],
+  "meaning": "Relative inverse depth, larger is closer. Each view has unknown scale and offset; not metric depth.",
+  "views": {
+    "front": {
+      "sourceSHA256": "c76bcaa5b4c333f592f32dec3edf36f3892bbffec654d506e8492fd8fab4f592",
+      "seconds": 0.4248208999997587,
+      "inputShape": [
+        1,
+        3,
+        518,
+        784
+      ],
+      "range": [
+        -0.056639477610588074,
+        3.987325668334961
+      ]
+    },
+    "back": {
+      "sourceSHA256": "3e8f13208c12fdb1d6e2155032df63b6d1a3b4f6969dee6767d9db887736513b",
+      "seconds": 0.4187369999999646,
+      "inputShape": [
+        1,
+        3,
+        518,
+        784
+      ],
+      "range": [
+        0.20430932939052582,
+        3.88639760017395
+      ]
+    },
+    "left": {
+      "sourceSHA256": "5aab797da2bb39a95434f73b996598eb0ebb80649bc8771f574265c85c829f75",
+      "seconds": 0.40124910000304226,
+      "inputShape": [
+        1,
+        3,
+        518,
+        784
+      ],
+      "range": [
+        0.43706628680229187,
+        3.8476076126098633
+      ]
+    },
+    "top": {
+      "sourceSHA256": "9da92c4e4317771e069ca1a4de8c13cee399331fe61cea2fb0ad8a26f626fa04",
+      "seconds": 0.394754599998123,
+      "inputShape": [
+        1,
+        3,
+        518,
+        784
+      ],
+      "range": [
+        1.0099483728408813,
+        5.238906383514404
+      ]
+    },
+    "front-quarter": {
+      "sourceSHA256": "004cc4b1b1db591b40829b0557f62523b9d5a791b9887e9a292dd6914a643c70",
+      "seconds": 0.42676639999990584,
+      "inputShape": [
+        1,
+        3,
+        518,
+        784
+      ],
+      "range": [
+        0.44996124505996704,
+        4.449697494506836
+      ]
+    },
+    "rear-quarter": {
+      "sourceSHA256": "846332d116da6d76160e346707a51753ae702417f1cdfcb883b9394fed60c70a",
+      "seconds": 0.40138350000052014,
+      "inputShape": [
+        1,
+        3,
+        518,
+        784
+      ],
+      "range": [
+        0.28298139572143555,
+        4.419635772705078
+      ]
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "provider": "built-in image_gen",
+  "prompts": {
+    "brocade": "Use case: stylized-concept. Asset type: seamless square grayscale base-color texture for reusable UV material in a cel-shaded anime fantasy 3D game. Flat orthographic fabric swatch filling entire square. Fine small-scale diamond brocade with delicate interlocking leaf-thread motifs, subtle woven textile grain, softly raised thread detail. Neutral warm white and light gray, low contrast, completely monochrome so runtime dye tint supplies color. Repeating even pattern with no central medallion. Diffuse flat illumination, no folds, no perspective, no dramatic shadows, no clothing shape, no borders, no objects, no text, no watermark. This is only a material surface texture, not a rendered garment. 1024 by 1024.",
+    "engraved": "Use case: stylized-concept. Asset type: seamless square grayscale base-color material texture for engraved armour in an anime fantasy 3D game. Flat orthographic sheet of neutral brushed metal, sparse elegantly engraved interlocking curling leaf lines with small geometric diamond details, restrained shallow fine incisions and fine hammered grain. Uniform medium-light silver gray, subtle contrast, monochrome only, runtime tint supplies the resource metal color. Pattern evenly distributed, tileable on all edges, no central emblem. Flat diffuse lighting, no hot reflections, no directional gradient, no perspective, no borders, no armour or weapon shapes, no objects, no text, no watermark. Only the material surface. 1024 by 1024."
+  }
+}

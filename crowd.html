@@ -1,0 +1,6 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Animated crowd stress test</title></head><body><aside>
+<a href="./gear.html">← Equipment lab</a><h1>Crowd stress test</h1><p class="muted">One merged outfit · three geometry LODs · independent GPU animation phases</p><div id="status">Loading crowd…</div>
+<label>Actors<select id="count"><option>100</option><option>1000</option><option selected>5000</option></select></label>
+<label>LOD mode<select id="lod"><option value="-1">Automatic distance</option><option value="0">Force near proxy</option><option value="1">Force mid proxy</option><option value="2">Force far proxy</option></select></label>
+<div class="buttons"><button id="overview">Overview</button><button id="ground">Ground level</button><button id="freeze">Pause</button></div>
+<p id="stats"></p><p class="muted">This measures rendering and baked skin animation, not 5,000 NPC brains or live cloth solvers. Distant outfits use vertex colours instead of detailed material textures. The crowd LODs are not the hero mesh.</p><button id="measure">Measure 10 seconds</button><pre id="result"></pre></aside><main id="view"></main><script type="module" src="/src/gear/crowd-lab.js"></script></body></html>

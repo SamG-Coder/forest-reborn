@@ -1,0 +1,56 @@
+{
+  "sourceTriangles": 45000,
+  "selected": {
+    "triangles": 12000,
+    "vertices": 6002,
+    "meanErrorMM": 0.14758837523107632,
+    "p99ErrorMM": 0.48301982342664823,
+    "sampledMaxErrorMM": 0.8689644772963944,
+    "handMaxErrorMM": 0.8240045656977485,
+    "closed": true,
+    "accepted": true
+  },
+  "candidates": [
+    {
+      "triangles": 6000,
+      "vertices": 3002,
+      "meanErrorMM": 0.2829788027437923,
+      "p99ErrorMM": 0.9239118435123524,
+      "sampledMaxErrorMM": 1.6998426875945012,
+      "handMaxErrorMM": 1.6998426875945012,
+      "closed": true,
+      "accepted": false
+    },
+    {
+      "triangles": 9000,
+      "vertices": 4502,
+      "meanErrorMM": 0.19811405120620862,
+      "p99ErrorMM": 0.6332891357553497,
+      "sampledMaxErrorMM": 1.2539222532526229,
+      "handMaxErrorMM": 1.2539222532526229,
+      "closed": true,
+      "accepted": false
+    },
+    {
+      "triangles": 12000,
+      "vertices": 6002,
+      "meanErrorMM": 0.14758837523107632,
+      "p99ErrorMM": 0.48301982342664823,
+      "sampledMaxErrorMM": 0.8689644772963944,
+      "handMaxErrorMM": 0.8240045656977485,
+      "closed": true,
+      "accepted": true
+    }
+  ],
+  "uv": {
+    "atlasSize": [
+      4335,
+      2995
+    ],
+    "uvVertices": 7505,
+    "charts": 77,
+    "referenceImagesUsedAsTexture": false
+  },
+  "measurement": "Bidirectional sampled point-to-triangle distance, 20k samples per surface plus all source hand vertices. Not an exhaustive Hausdorff bound.",
+  "topology": "Simplified triangles; not anatomical quad retopology. No image textures."
+}

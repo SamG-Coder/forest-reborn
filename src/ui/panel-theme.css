@@ -1,0 +1,65 @@
+/* Shared menu system. Inventory, dialogue and guild windows use one scale. */
+#hud .world-panel,#hud .player-panel{--ink:#efe8d4;--muted:#b9c8c1;--gold:#d7b675;--line:#a392693b;--surface:#203a33;position:absolute;left:50%;right:auto;top:8vh;transform:translateX(-50%);width:1000px;max-width:calc(100vw - 40px);max-height:calc(92vh - 128px);padding:24px 28px;overflow:auto;border:1px solid #ae9565;border-radius:10px;background:linear-gradient(145deg,#233b35fa,#122724fc 72%);box-shadow:inset 0 0 0 4px #142824,0 18px 80px #000a;color:var(--ink);font:15px/1.5 Manrope,system-ui;z-index:45;text-align:left}
+#hud .world-panel[hidden],#hud .player-panel[hidden]{display:none}
+#hud .world-panel h2,#hud .player-panel h2{font:30px/1.2 Georgia,serif;color:#f2d8a5;margin:8px 45px 22px 0}
+#hud .world-panel h3,#hud .player-panel h3{font:21px/1.3 Georgia,serif;margin:0 0 10px;color:#f2dfb8}
+#hud .world-panel h4,#hud .player-panel h4{font:16px/1.3 Manrope,system-ui;color:#e8d2a6;margin:24px 0 12px}
+#hud .world-panel p,#hud .player-panel p{font-size:15px;line-height:1.65;margin:8px 0 15px;color:#d2dbd0}
+#hud .world-panel small,#hud .player-panel small{font-size:12px;line-height:1.5}
+#hud .world-panel .muted,#hud .player-panel .muted{color:var(--muted)}
+#hud .world-panel:before{margin:0;color:#b4cdb8;font-size:11px;letter-spacing:.16em}
+#hud .world-panel input,#hud .world-panel select{border:1px solid #7f947c7a;border-radius:5px;color:var(--ink);background:#102923;padding:10px 12px;font:14px Manrope,system-ui;min-width:0}
+#hud .world-panel button,#hud .player-panel button{color:var(--ink);font:14px/1.4 Manrope,system-ui;padding:10px 15px!important;border-radius:5px;cursor:pointer}
+#hud .world-panel button:focus-visible,#hud .player-panel button:focus-visible,#hud .world-panel input:focus-visible{outline:2px solid #eed49b;outline-offset:3px}
+#hud .world-panel button:disabled,#hud .player-panel button:disabled{cursor:default;opacity:.5}
+#hud .world-panel .panel-close,#hud .player-panel .close-player-panel{position:absolute;top:16px;right:18px;font-size:25px!important;width:42px;height:42px;padding:2px!important;line-height:1}
+#hud .primary-action{background:linear-gradient(#b49c66,#79603d);border-color:#e1c386;color:#fff6dc;box-shadow:inset 0 0 0 1px #332919}
+#hud .world-panel .eyebrow,#hud .player-panel .eyebrow{font:10px/1.5 Manrope,system-ui;letter-spacing:.11em;color:#bca97e;text-transform:uppercase;display:block;margin-bottom:5px}
+.illustrated-header{display:grid;grid-template-columns:172px 1fr;min-height:128px;border:1px solid var(--line);border-radius:7px;overflow:hidden;background:#38524738;margin-bottom:22px}
+.illustrated-header .header-copy{padding:19px 24px;align-self:center}
+#hud .illustrated-header h3{font-size:24px;margin-bottom:8px}.illustrated-header p:last-child{margin-bottom:0!important}
+.workshop-picture{background-image:url('/assets/ui/workshops.png');background-size:300% 200%;background-repeat:no-repeat;min-height:128px}
+.item-picture{width:64px;height:64px;display:grid;place-items:center;flex:none;border:1px solid #c0a5734f;background:radial-gradient(ellipse,#526b5259,#142620);border-radius:6px;overflow:hidden}
+.item-picture .item-art{width:100%;height:100%}.item-picture svg{width:80%;height:80%;color:#cfb57c}.item-picture.large{width:100px;height:100px}
+.illustrated-header>.item-picture{width:100%;height:100%;min-height:128px;border:0;border-radius:0}.illustrated-header>.item-picture .item-art{width:120px;height:120px}
+#hud .section-tabs,#hud .dialogue-tabs,#hud .player-panel>nav{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 20px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+#hud .section-tabs .active,#hud .dialogue-tabs .active,#hud .player-panel>nav .active{background:#506b524d;border-color:#cfb27a;color:#ffe8b7;box-shadow:inset 0 -2px #cdb07a}
+.panel-toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:15px;margin-bottom:18px}.panel-toolbar p{margin:0!important}.panel-toolbar .panel-search{margin-left:auto;max-width:250px}.coin-label{color:#e3c481!important;font-variant-numeric:tabular-nums}
+.shop-grid,.card-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.shop-card,.quest-card,.guild-card,.social-card,.bounty-card{padding:19px;border:1px solid var(--line);border-radius:7px;background:linear-gradient(135deg,#314b4138,#0c211b45)}
+.shop-card{display:flex;flex-direction:column}.item-card-heading{display:flex;gap:15px;align-items:center;margin-bottom:14px;min-width:0}.item-card-heading>div:last-child{min-width:0}
+#hud .item-card-heading h3{font-size:20px;margin-bottom:0}.shop-card>p{flex:1}.card-footer{display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid var(--line);padding-top:15px;margin-top:8px}.card-footer small{display:block}
+.recipe-browser,.journal-layout{display:grid;grid-template-columns:300px minmax(0,1fr);gap:24px;align-items:start}
+.recipe-sidebar>.panel-search{width:100%;box-sizing:border-box}.filter-check{display:flex;align-items:center;gap:8px;font-size:12px;color:#bbc9bd;margin:12px 0 16px}.filter-check input{accent-color:#c0a06b}
+.recipe-list,.journal-list{display:flex;flex-direction:column;gap:8px;max-height:450px;overflow:auto;padding:3px}
+#hud .recipe-choice,#hud .journal-choice{display:flex;align-items:center;text-align:left;gap:12px;background:#1c332d;border-color:#697a603b;padding:10px!important}.recipe-choice .item-picture,.journal-choice .item-picture{width:46px;height:46px}.recipe-choice small,.journal-choice small{display:block;margin-top:4px;color:#afc0b3;font-size:11px!important}
+#hud .recipe-choice.active,#hud .journal-choice.active{border-color:#c8ae78;background:#4d5b3d59;box-shadow:inset 3px 0 #cbb079}
+.recipe-detail{padding:22px;background:#10262066;border:1px solid var(--line);border-radius:7px}.recipe-result{display:flex;align-items:center;gap:18px;margin-bottom:16px}.recipe-facts,.quest-rewards{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:18px 0}
+.stat-chip{padding:6px 10px;background:#7889661c;border:1px solid #97a57b33;border-radius:4px;font-size:12px;color:#cad5bf;white-space:nowrap}
+.ingredient-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.ingredient{display:flex;align-items:center;gap:10px;border:1px solid #a7ba7b29;border-radius:5px;padding:9px}.ingredient .item-picture{width:42px;height:42px}.ingredient b{font-size:12px;display:block}.ingredient small{font-size:11px!important;color:#accd9c}.ingredient.missing{border-color:#bc816447}.ingredient.missing small{color:#e6ad8c}
+.recipe-footer{display:flex;flex-direction:column;gap:12px;margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}.recipe-footer button{align-self:flex-start}
+.npc-quests{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:22px}.quest-card p{font-size:14px!important}.quest-card .primary-action{margin-top:6px}.reward-item{display:flex;gap:9px;align-items:center;font-size:13px;width:100%}.reward-item .item-picture{width:40px;height:40px}
+.progress-meter{margin:16px 0}.meter-track{height:7px;background:#0b2119;border:1px solid #54694b;overflow:hidden;border-radius:3px}.meter-track i{display:block;height:100%;background:linear-gradient(90deg,#65865e,#b4bb7a)}.progress-meter small{display:block;text-align:right;color:#bcccab;margin-top:6px}
+.giver-location{padding:10px 15px;border-left:2px solid #c0a371;background:#64785d18;font-size:13px!important}.empty-state{padding:30px;text-align:center;border:1px dashed var(--line);border-radius:7px;grid-column:1/-1}.section-heading{margin:25px 0 16px!important}
+#hud .player-panel[data-panel=bag]{width:680px}#hud .player-panel[data-panel=skills]{width:1000px}.bag-grid{gap:10px}.inventory-slot{height:82px}.inventory-slot .item-art{width:60px;height:60px}.item-inspector{padding:20px 0 5px;border-top:1px solid var(--line);margin-top:18px}.bag-toolbar{margin-bottom:20px}
+#hud .skill-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-bottom:24px}#hud .skill-row{grid-template-columns:56px 1fr auto;padding:16px!important;gap:10px;background:#1e362e;border-color:var(--line)}.skill-row .item-picture{width:54px;height:54px;grid-row:1/3}.skill-row .skill-xp{grid-column:2/4;height:6px}.skill-row em{grid-column:2/4;justify-self:end}.skill-row>span>small{font-size:12px!important;line-height:1.5}.skill-row strong{font-size:15px!important}
+.character-layout{grid-template-columns:230px minmax(230px,1fr) 220px;gap:22px}.character-stats{padding:18px;border:1px solid var(--line);border-radius:6px;font-size:13px}.equipment-slot{min-height:100px}.character-preview{height:395px}#hud .equipment-slot small{font-size:10px}
+.guild-form{padding:20px;border:1px solid var(--line);border-radius:7px;margin-bottom:22px;align-items:center}.guild-card .member-tags{display:flex;flex-wrap:wrap;gap:6px}.member-tag{font-size:12px;background:#43604a50;border:1px solid var(--line);padding:5px 9px;border-radius:4px}
+.bounty-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.bounty-card{display:flex;flex-direction:column}.bounty-card>.item-picture{width:76px;height:76px;margin-bottom:15px}.bounty-card>p{flex:1;font-size:13px!important}.bounty-card button{margin-top:10px}.social-actions{display:flex;gap:8px;flex-wrap:wrap}.social-card{margin-bottom:16px}.social-card .progress-meter{max-width:360px}.notice-feed{padding-left:18px;border-left:1px solid #8b9a7255}.notice-feed p{font-size:13px!important;border-bottom:1px solid var(--line);padding-bottom:12px}
+@media(max-width:1050px){#hud .world-panel,#hud .player-panel{width:880px}.recipe-browser,.journal-layout{grid-template-columns:240px minmax(0,1fr)}.character-layout{grid-template-columns:190px 1fr}.character-stats{grid-column:1/-1;grid-template-columns:1fr auto 1fr auto}.bounty-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:720px){#hud .world-panel,#hud .player-panel{top:16px;max-height:calc(100vh - 130px);max-width:calc(100vw - 20px);padding:18px;box-sizing:border-box}.shop-grid,.card-grid,.npc-quests,#hud .skill-list,.bounty-grid{grid-template-columns:1fr}.recipe-browser,.journal-layout{grid-template-columns:1fr}.recipe-list,.journal-list{max-height:190px}.illustrated-header{grid-template-columns:100px 1fr}.illustrated-header .header-copy{padding:14px}.illustrated-header>.item-picture .item-art{width:84px;height:84px}.ingredient-grid{grid-template-columns:1fr}.character-layout{grid-template-columns:1fr}.character-preview{height:280px}.character-stats{grid-template-columns:1fr auto}.bag-grid{gap:5px}.inventory-slot{height:60px}.inventory-slot .item-art{width:44px;height:44px}}
+
+#hud .world-panel .filter-check{letter-spacing:0;justify-content:flex-start;margin:12px 0 16px}
+#hud .world-panel .filter-check input{width:16px;height:16px;min-width:16px;flex:none;margin:0;padding:0;display:inline-block}
+#hud .world-panel .guild-form input{width:auto;flex:1;min-width:180px;margin:0}
+#hud .world-panel .guild-form select{width:auto;margin:0}
+#hud .world-panel button{margin:0}
+#hud #hotbar{gap:6px;padding:7px;bottom:29px}
+#hud #hotbar .utility-action{width:70px;height:78px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:1px;padding:5px 3px}
+#hotbar .utility-action .item-art{width:45px;height:45px}
+#hotbar .utility-action .action-name{font-size:10px;color:#e6dec8;line-height:18px}
+#hotbar .utility-action kbd{position:absolute;top:4px;left:6px;font-size:10px;color:#f2d9a5;text-shadow:0 1px 2px #000}
+#hud #hotbar #attack{height:78px;position:relative;width:84px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:3px}
+#hotbar .attack-icon .item-art{width:45px;height:45px}#hotbar #attack>kbd{position:absolute;left:5px;top:4px}
+#hud #hotbar #attack>b{font-size:12px}#hotbar #attack>small{display:none}
+@media(max-width:720px){#hud #hotbar .utility-action{width:49px}#hud #hotbar #attack{width:58px}#hotbar .utility-action .action-name{font-size:8px}#hud #hotbar{gap:3px}}

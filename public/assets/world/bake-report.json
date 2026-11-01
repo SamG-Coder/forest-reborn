@@ -1,0 +1,62 @@
+{
+  "ground": {
+    "size": 1024,
+    "normalConvention": "OpenGL +Y",
+    "normalSource": "approximate luminance microheight, not a geometry bake",
+    "basecolorEdgeError": 0.0
+  },
+  "paving": {
+    "size": 1024,
+    "normalConvention": "OpenGL +Y",
+    "normalSource": "approximate luminance microheight, not a geometry bake",
+    "basecolorEdgeError": 0.0
+  },
+  "plaster": {
+    "size": 1024,
+    "normalConvention": "OpenGL +Y",
+    "normalSource": "approximate luminance microheight, not a geometry bake",
+    "basecolorEdgeError": 0.0
+  },
+  "roof": {
+    "size": 1024,
+    "normalConvention": "OpenGL +Y",
+    "normalSource": "approximate luminance microheight, not a geometry bake",
+    "basecolorEdgeError": 0.0
+  },
+  "masonry": {
+    "size": 1024,
+    "normalConvention": "OpenGL +Y",
+    "normalSource": "approximate luminance microheight, not a geometry bake",
+    "basecolorEdgeError": 0.0
+  },
+  "roof-clay": {
+    "size": 1024,
+    "normalConvention": "OpenGL +Y",
+    "normalSource": "approximate luminance microheight, not a geometry bake",
+    "basecolorEdgeError": 0.0
+  },
+  "wall-brick": {
+    "size": 1024,
+    "normalConvention": "OpenGL +Y",
+    "normalSource": "approximate luminance microheight, not a geometry bake",
+    "basecolorEdgeError": 0.0
+  },
+  "wall-timber": {
+    "size": 1024,
+    "normalConvention": "OpenGL +Y",
+    "normalSource": "approximate luminance microheight, not a geometry bake",
+    "basecolorEdgeError": 0.0
+  },
+  "bark": {
+    "size": 1024,
+    "normalConvention": "OpenGL +Y",
+    "normalSource": "approximate luminance microheight, not a geometry bake",
+    "basecolorEdgeError": 0.0
+  },
+  "birch-bark": {
+    "size": 1024,
+    "normalConvention": "OpenGL +Y",
+    "normalSource": "approximate luminance microheight, not a geometry bake",
+    "basecolorEdgeError": 0.0
+  }
+}

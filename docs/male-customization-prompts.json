@@ -1,0 +1,39 @@
+{
+  "tool": "built-in image_gen",
+  "faces": [
+    {
+      "id": "calm",
+      "prompt": "Use case: stylized-concept. Asset type: flat UV texture for an adult male anime game character. Square 1024x1024. THIS IS A FLAT FACE FEATURE TEXTURE, NOT a portrait or a head render. Perfectly flat uniform light neutral gray RGB approximately 190 background, seamless blank edges. No head silhouette, no ears, no hair, no neck, no body, no perspective, no illumination, no cast shadows. Only two masculine anime eyes, eyebrows, tiny understated nose marks and a thin neutral closed mouth. Strict grayscale only. Both eye centers at (320,430) and (704,430); eyes about 190px wide and 75px high. Nose centered (512,590); mouth centered (512,720), width125px. Irises medium gray with black pupil, delicate grayscale radial detail and a tiny white highlight, eye whites near-white. Adult masculine understated lash lines. Brows above eyes at y345. Background remains completely flat grey. No text no watermark. Texture is for direct UV mapping onto existing geometry. Calm approachable male face, straight brows, balanced almond eyes, relaxed mouth."
+    },
+    {
+      "id": "resolute",
+      "prompt": "Use case: stylized-concept. Asset type: flat UV texture for an adult male anime game character. Square 1024x1024. THIS IS A FLAT FACE FEATURE TEXTURE, NOT a portrait or a head render. Perfectly flat uniform light neutral gray RGB approximately 190 background, seamless blank edges. No head silhouette, no ears, no hair, no neck, no body, no perspective, no illumination, no cast shadows. Only two masculine anime eyes, eyebrows, tiny understated nose marks and a thin neutral closed mouth. Strict grayscale only. Both eye centers at (320,430) and (704,430); eyes about 190px wide and 75px high. Nose centered (512,590); mouth centered (512,720), width125px. Irises medium gray with black pupil, delicate grayscale radial detail and a tiny white highlight, eye whites near-white. Adult masculine understated lash lines. Brows above eyes at y345. Background remains completely flat grey. No text no watermark. Texture is for direct UV mapping onto existing geometry. Resolute masculine face, slightly angular narrow eyes, thicker straight eyebrows gently descending toward center, firm relaxed mouth."
+    },
+    {
+      "id": "gentle",
+      "prompt": "Use case: stylized-concept. Asset type: flat UV texture for an adult male anime game character. Square 1024x1024. THIS IS A FLAT FACE FEATURE TEXTURE, NOT a portrait or a head render. Perfectly flat uniform light neutral gray RGB approximately 190 background, seamless blank edges. No head silhouette, no ears, no hair, no neck, no body, no perspective, no illumination, no cast shadows. Only two masculine anime eyes, eyebrows, tiny understated nose marks and a thin neutral closed mouth. Strict grayscale only. Both eye centers at (320,430) and (704,430); eyes about 190px wide and 75px high. Nose centered (512,590); mouth centered (512,720), width125px. Irises medium gray with black pupil, delicate grayscale radial detail and a tiny white highlight, eye whites near-white. Adult masculine understated lash lines. Brows above eyes at y345. Background remains completely flat grey. No text no watermark. Texture is for direct UV mapping onto existing geometry. Gentle adult male face, softer slightly rounded eyes, fine softly arched brows, subtly friendly closed mouth. Still adult masculine."
+    },
+    {
+      "id": "wry",
+      "prompt": "Use case: stylized-concept. Asset type: flat UV texture for an adult male anime game character. Square 1024x1024. THIS IS A FLAT FACE FEATURE TEXTURE, NOT a portrait or a head render. Perfectly flat uniform light neutral gray RGB approximately 190 background, seamless blank edges. No head silhouette, no ears, no hair, no neck, no body, no perspective, no illumination, no cast shadows. Only two masculine anime eyes, eyebrows, tiny understated nose marks and a thin neutral closed mouth. Strict grayscale only. Both eye centers at (320,430) and (704,430); eyes about 190px wide and 75px high. Nose centered (512,590); mouth centered (512,720), width125px. Irises medium gray with black pupil, delicate grayscale radial detail and a tiny white highlight, eye whites near-white. Adult masculine understated lash lines. Brows above eyes at y345. Background remains completely flat grey. No text no watermark. Texture is for direct UV mapping onto existing geometry. Wry confident adult male face, slightly lifted outer eyebrow ends, half-lidded almond eyes, very slight closed-mouth smirk."
+    },
+    {
+      "id": "stern",
+      "prompt": "Use case: stylized-concept. Asset type: flat UV texture for an adult male anime game character. Square 1024x1024. THIS IS A FLAT FACE FEATURE TEXTURE, NOT a portrait or a head render. Perfectly flat uniform light neutral gray RGB approximately 190 background, seamless blank edges. No head silhouette, no ears, no hair, no neck, no body, no perspective, no illumination, no cast shadows. Only two masculine anime eyes, eyebrows, tiny understated nose marks and a thin neutral closed mouth. Strict grayscale only. Both eye centers at (320,430) and (704,430); eyes about 190px wide and 75px high. Nose centered (512,590); mouth centered (512,720), width125px. Irises medium gray with black pupil, delicate grayscale radial detail and a tiny white highlight, eye whites near-white. Adult masculine understated lash lines. Brows above eyes at y345. Background remains completely flat grey. No text no watermark. Texture is for direct UV mapping onto existing geometry. Stern mature male face, heavier straight brows, narrower eyes with defined upper eyelid creases, understated straight mouth. No beard or wrinkles."
+    }
+  ],
+  "materials": [
+    [
+      "body-smooth",
+      "Square seamless tileable grayscale UV albedo texture for smooth adult male anime character skin. Very subtle fine skin grain on uniform neutral gray RGB190. Clean stylized game texture, flat lighting, extremely low contrast, no anatomy, no face, no body silhouette, no directional shading, no hairs, no marks, no text. Texture material swatch only, not a person. All edges seamlessly repeat."
+    ],
+    [
+      "body-weathered",
+      "Square seamless tileable grayscale UV albedo texture for lightly weathered adult male anime game character skin. Uniform neutral gray RGB190 with subtle tiny freckles and faint natural skin grain, tasteful low contrast. Flat lighting, no anatomy, no face, no body silhouette, no directional shading, no large marks, no text. Material swatch only, all edges seamlessly repeat."
+    ],
+    [
+      "underwear-starter",
+      "Square seamless tileable grayscale UV fabric albedo for starter men's boxer briefs in an anime RPG. Fine charcoal cotton knit fabric, restrained clean hand-painted anime material style, tiny detailed soft weave evenly filling entire image. Flat lighting. No garment silhouette, no person, no body, no folds, no shadows, no logo, no text. This is a repeatable textile swatch for wrapping a separate underwear garment mesh. Medium gray with darker fine weave so runtime tint can change colour."
+    ]
+  ]
+}

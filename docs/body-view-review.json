@@ -1,0 +1,15 @@
+{
+  "accepted": [
+    "front.png",
+    "back.png",
+    "left.png",
+    "top.png",
+    "front-quarter.png",
+    "rear-quarter.png"
+  ],
+  "review": "Top regenerated after first attempt was an elevated frontal view. Replacement is closer to overhead but still shows more chest/shorts than a calibrated vertical camera. Diagonal regenerations fixed wrist height but lost the required 45-degree body/arm projection; retained first diagonal images as imperfect held-out references. No claim of exact multiview consistency.",
+  "diagonalRegenerationPrompts": [
+    "Same exact blank-faced bald anime male from reference, same charcoal shorts and anatomy. REGENERATE technical FRONT LEFT three-quarter 45 degrees, chest visible, face points screen right view. STRICT ORTHOGRAPHIC LEVEL camera, zero elevation zero roll. Arms straight horizontal in rigid T-pose. Both shoulder joints, both elbows, both wrist joints and both fingertips MUST all lie at SAME IMAGE Y (y220). Both arms have identical projected length. No bent wrist no angled arm. No perspective; farther arm must be same screen length as nearer arm. Head top y15 feet soles y1000 in1536x1024 canvas. Midpoint of shoulders x768. A true 45degree rotated armspan is 800pixels wide, fingertips around x368 and1168. Standing upright, legs same spacing, blank head no features or hair. White background. Clean anime shading. Single view, no text.",
+    "Same exact blank-faced bald anime male from reference, same charcoal shorts and anatomy. REGENERATE technical REAR LEFT three-quarter 135 degrees, back visible, head points screen left view. STRICT ORTHOGRAPHIC LEVEL camera, zero elevation zero roll. Arms straight horizontal in rigid T-pose. Both shoulder joints, both elbows, both wrist joints and both fingertips MUST all lie at SAME IMAGE Y (y220). Both arms have identical projected length. No bent wrist no angled arm. No perspective; farther arm must be same screen length as nearer arm. Head top y15 feet soles y1000 in1536x1024 canvas. Midpoint of shoulders x768. A true 45degree rotated armspan is 800pixels wide, fingertips around x368 and1168. Standing upright, legs same spacing, blank head no features or hair. White background. Clean anime shading. Single view, no text."
+  ]
+}

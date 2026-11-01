@@ -1,0 +1,4 @@
+#damage-numbers>.combat-text{position:absolute;pointer-events:none;font-size:25px;font-weight:800;line-height:1;transform:translate(-50%,-50%);color:#ffe4a0;text-shadow:0 2px 2px #101810,1px 0 2px #101810,-1px 0 2px #101810;white-space:nowrap}
+#damage-numbers>.incoming{color:#ff897c;font-size:29px}
+#damage-numbers>.world{color:#f2efde;font-size:22px}
+#damage-numbers>.blocked{color:#a7deed;font-size:21px}

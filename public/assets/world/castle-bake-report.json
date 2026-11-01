@@ -1,0 +1,20 @@
+{
+  "castle-limestone": {
+    "size": 1024,
+    "normalConvention": "OpenGL +Y",
+    "normalSource": "estimated luminance microheight; not geometry-baked",
+    "basecolorEdgeError": 0.0
+  },
+  "castle-slate": {
+    "size": 1024,
+    "normalConvention": "OpenGL +Y",
+    "normalSource": "estimated luminance microheight; not geometry-baked",
+    "basecolorEdgeError": 0.0
+  },
+  "castle-bedrock": {
+    "size": 1024,
+    "normalConvention": "OpenGL +Y",
+    "normalSource": "estimated luminance microheight; not geometry-baked",
+    "basecolorEdgeError": 0.0
+  }
+}

@@ -1,0 +1,11 @@
+import {chromium} from '@playwright/test';import assert from 'node:assert/strict';
+const b=await chromium.launch();const p=await b.newPage({viewport:{width:1300,height:900}});const errors=[];p.on('pageerror',e=>errors.push(e.message));await p.goto('http://127.0.0.1:5173/game.html');await p.waitForFunction(()=>window.gameDemo?.ready);await p.click('#enter');
+await p.keyboard.down('KeyW');await p.keyboard.down('ShiftLeft');await p.waitForTimeout(350);await p.keyboard.press('Space');
+await p.waitForFunction(()=>!window.gameDemo.player.grounded);const phase=await p.evaluate(()=>window.gameDemo.animator.phase);
+await p.keyboard.press('KeyJ');await p.waitForTimeout(150);
+const air=await p.evaluate(()=>{const g=window.gameDemo;return {y:g.player.position.y,phase:g.animator.phase,attack:g.combat.action?.kind};});
+assert.ok(air.y>.2);assert.equal(air.phase,phase);assert.equal(air.attack,'sword');await p.screenshot({path:'test-results/jump-attack.png'});
+await p.keyboard.up('KeyW');await p.keyboard.up('ShiftLeft');await p.waitForTimeout(900);
+assert.equal(await p.evaluate(()=>window.gameDemo.player.grounded),true);assert.equal(await p.evaluate(()=>window.gameDemo.player.position.y),0);
+await p.keyboard.press('KeyT');await p.waitForFunction(()=>window.gameDemo.combat.action?.style==='thrust'&&window.gameDemo.combat.action.progress>.35);
+assert.deepEqual(errors,[]);console.log({air,landed:true,thrust:true,errors});await b.close();
