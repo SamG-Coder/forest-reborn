@@ -1,6 +1,7 @@
 import './item-art.css';
 import {publicUrl} from '../assets/public-url.js';
 const paths={
+  unstrungBow:'M10 5C44 13 44 41 10 49M26 21l5 11M8 4l4 3M8 50l4-3',
   mount:'M12 45V29L8 22l4-11 9 5 10-9 4 4 2 13 8 8-5 7-10-4-3 10ZM21 16l7 6M14 25l6 3M30 35l-6-9',
   sword:'M12 40 39 9 42 6 42 13 17 44ZM8 32 23 45M8 47 15 39',
   clothes:'m17 8 7 4 7-4 13 11-8 8-5-5v24H17V22l-5 5-8-8Z',
@@ -21,6 +22,8 @@ export function itemIcon(name){return `<svg viewBox="0 0 50 54" aria-hidden="tru
 const iconCells={sword:0,legs:1,clothes:2,shoes:3,head:4,body:5,chainmail:6,'plate-cuirass':7,herbs:8,wood:9,ore:10,copper:11,parcel:12,hide:13,necklace:14,ring:15};
 /** One generated atlas serves every filled slot. Empty slots retain their outline. */
 export function itemArt(item){
+  const archery={'weapon.shortbow':0,'weapon.longbow':1,'arrow.wood':2,'arrow.iron':3,ironArrowhead:3,'arrow.bodkin':4,bodkinTip:4,flax:5,bowstring:6,flaxFibre:6,feather:7,arrowShaft:8}[item.id];
+  if(archery!==undefined)return `<span class="item-art" aria-hidden="true" style="background-image:url('${publicUrl('/assets/ui/archery-items.png')}');background-size:300% 300%;background-position:${archery%3*50}% ${Math.floor(archery/3)*50}%"></span>`;
   const menu={unarmed:0,character:1,bag:2,skills:3,quests:4,map:5,friends:6,activity:7,guilds:8}[item.id];
   if(menu!==undefined)return `<span class="item-art" aria-hidden="true" style="background-image:url('${publicUrl('/assets/ui/menu-icons.png')}');background-size:300% 300%;background-position:${menu%3*50}% ${Math.floor(menu/3)*50}%"></span>`;
   const craft={shears:0,wool:1,yarn:2,wovenCloth:3,ogreTooth:4,bounty:5}[item.id];

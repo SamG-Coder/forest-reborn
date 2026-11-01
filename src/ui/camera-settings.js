@@ -34,7 +34,7 @@ export function createCameraSettings({controller,storage,onOpen}){
   panel.querySelector('.camera-reset').onclick=()=>{controller.setSettings(DEFAULT_CAMERA_SETTINGS);persist();};
   const button=document.createElement('button');button.id='camera-options';button.textContent='Camera';
   button.dataset.tooltip='Camera settings\nSteady follow, field of view, look sensitivity and optional combat shake.';
-  button.onclick=()=>{onOpen();focusPanel(close);panel.hidden=!panel.hidden;render();};document.querySelector('.top-actions').append(button);
+  button.onclick=()=>{if(!panel.hidden){close();return;}onOpen();focusPanel(close);panel.hidden=false;render();};document.querySelector('.top-actions').append(button);
   render();
   return {close};
 }

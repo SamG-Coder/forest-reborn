@@ -12,10 +12,10 @@ export class CharacterLOD {
       if(!actor.promoted&&visible)this.promotions++;
       actor.promoted=visible;record.model.root.visible=visible;
       if(!visible)continue;
-      record.used=performance.now();record.model.root.position.copy(actor.position);record.model.root.rotation.y=actor.yaw??0;
+      record.used=performance.now();record.model.root.position.copy(actor.position);record.model.root.rotation.y=actor.yaw??0;record.model.root.rotation.z=actor.fallAngle??0;
       record.elapsed+=dt;
       if(record.elapsed>=(distance<12?1/45:1/24)){
-        record.model.update(Math.min(record.elapsed,.1),{speed:actor.stationary?0:actor.moveSpeed??1.3,activity:actor.job===6?'carry':'rest',armed:false});record.elapsed=0;
+        record.model.update(Math.min(record.elapsed,.1),actor.pose??{speed:actor.stationary?0:actor.moveSpeed??1.3,activity:actor.job===6?'carry':'rest',armed:false});record.elapsed=0;
       }
     }
     if(!this.pending){

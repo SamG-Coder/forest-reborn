@@ -1,9 +1,10 @@
 import {inTown} from '../world/terrain.js';
+import {guardLines} from '../audio/dialogue-lines.js';
 
 export const GUARD_WARNING_MS=10000;
 export const TOWN_EXIT_MARGIN=6;
 export class TownLaw {
-  constructor(announce){this.announce=announce;this.warnings=new Map();this.recentWarnings=new Map();this.hostiles=new Set();}
+  constructor(announce){this.announce=announce;this.warnings=new Map();this.recentWarnings=new Map();this.hostiles=new Set();this.warningNumber=0;this.escalationNumber=0;}
   update(subjects,guards,now){
     this.hostiles.clear();const present=new Set();
     for(const [id,warning]of this.recentWarnings)if(warning.expires<=now)this.recentWarnings.delete(id);
@@ -22,12 +23,12 @@ export class TownLaw {
       if(!warning&&this.recentWarnings.has(unit.id)){warning={...this.recentWarnings.get(unit.id)};this.warnings.set(unit.id,warning);}
       if(!warning&&guard){
         warning={id:unit.id,guardId:guard.id,deadline:now+GUARD_WARNING_MS};this.warnings.set(unit.id,warning);
-        const text=`${unit.name}, no fighting in town. Outside. You have ten seconds.`;
+        const text=guardLines.warning[this.warningNumber++%guardLines.warning.length](unit.name);
         this.announce(`${guard.name}: ${text}`,now,{guardId:guard.id,subjectId:unit.id,text});
       }
       if(warning&&(now>=warning.deadline||flag.wantedUntil>now)){
         this.hostiles.add(unit.id);
-        if(!warning.escalated){warning.escalated=true;this.announce(`The watch is moving to remove ${unit.name} from town.`,now,{guardId:warning.guardId,subjectId:unit.id,text:'You were warned. Weapons down!'});}
+        if(!warning.escalated){warning.escalated=true;this.announce(`The watch is moving to remove ${unit.name} from town.`,now,{guardId:warning.guardId,subjectId:unit.id,text:guardLines.escalate[this.escalationNumber++%guardLines.escalate.length]});}
       }
     }
     for(const id of this.warnings.keys())if(!present.has(id))this.warnings.delete(id);

@@ -37,7 +37,7 @@ try{
   await page.screenshot({path:`${output}/world.png`});
   console.log('Opening and world loaded');
   // Prove the hosted save path retains a spent balance instead of re-granting 5g.
-  await page.evaluate(()=>{gameDemo.progress.data.coins=49955;gameDemo.saveSession();});
+  await page.evaluate(async()=>{gameDemo.progress.data.coins=49955;await gameDemo.saveSession();});
   await page.reload();
   await page.locator('[data-continue-save]').click();
   await page.waitForFunction(()=>window.gameDemo?.ready,null,{timeout:120000});

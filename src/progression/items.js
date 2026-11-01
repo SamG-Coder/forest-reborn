@@ -1,7 +1,20 @@
 import {GEAR_SLOTS} from '../gear/catalog.js';
+import {WEAPONS} from '../game/weapon-catalog.js';
+import {ARROWS} from '../game/arrow-catalog.js';
 
 export const BAG_SIZE=24;
 export const ITEMS=Object.freeze({
+  bowStave:{name:'Shaped bow stave',type:'Material',stack:20,value:7,icon:'wood',description:'Seasoned timber with a continuous grain. Carve and tiller this into an unstrung bow.'},
+  unstrungShortbow:{name:'Unstrung ash shortbow',type:'Material',stack:1,value:20,icon:'unstrungBow',description:'Carved and tillered, but cannot shoot. Add a linen bowstring at the carpenter’s bench.'},
+  unstrungLongbow:{name:'Unstrung yew warbow',type:'Material',stack:1,value:65,icon:'unstrungBow',description:'A powerful unstrung bow. Fit a linen bowstring with level 5 Fletching before equipping.'},
+  flax:{name:'Fresh flax',type:'Material',stack:40,value:2,icon:'flax',description:'Blue-flowered flax from the meadow. Dress the stems into fibre at a loom.'},
+  flaxFibre:{name:'Dressed flax fibre',type:'Material',stack:40,value:3,icon:'yarn',description:'Twist into bowstrings, bind arrows or weave linen.'},
+  bowstring:{name:'Linen bowstring',type:'Material',stack:20,value:8,icon:'yarn',description:'Waxed flax cord for bows. Made at the loom using Fletching.'},
+  arrowShaft:{name:'Arrow shaft',type:'Material',stack:120,value:1,icon:'arrow',description:'Straight, shaved timber. Add flights and a tip at the carpenter’s bench.'},
+  feather:{name:'Flight feather',type:'Material',stack:60,value:1,icon:'feather',description:'Gather fallen feathers near the meadow, or buy them from Orin. Used to fletch arrows.'},
+  ironArrowhead:{name:'Iron broadhead',type:'Material',stack:120,value:2,icon:'arrow',description:'A wide iron cutting point. Fit to a shaft using Fletching.'},
+  bodkinTip:{name:'Steel bodkin tip',type:'Material',stack:120,value:4,icon:'arrow',description:'A narrow hardened point for piercing armour.'},
+  ...Object.fromEntries(Object.entries(ARROWS).map(([id,a])=>[id,{name:a.name,type:'Ammunition',stack:120,value:a.value,icon:'arrow',description:`Consumed when a bow is released. +${a.damage} damage; ignores ${Math.round(a.penetration*100)}% of armour. Equip from your bag to prefer this arrow.`}])),
   steelScrap:{name:'Tempered steel scrap',type:'Material',stack:20,value:12,icon:'ore',description:'Salvaged from the Ash Company. Rework it into steel ingots.'},
   steelIngot:{name:'Steel ingot',type:'Material',stack:20,value:35,icon:'ore',description:'Used for Highmere field armour. Smelt tempered scrap with coal.'},
   giantRune:{name:'Weathered giant rune',type:'Material',stack:20,value:60,icon:'ore',description:'A carved stone carried by a hillborn giant. The Highmere archivist studies these.'},
@@ -33,10 +46,11 @@ export const ITEMS=Object.freeze({
 });
 const ARMOUR={cap:1,'open-helmet':8,'closed-helmet':10,tunic:2,trousers:1,'tall-boots':3,'leather-armour':12,chainmail:24,'plate-cuirass':38};
 export function itemDefinition(id,registry){
+  if(WEAPONS[id]){const w=WEAPONS[id];return {id,...w,type:'Weapon',slot:'weapon',stack:1,value:id==='sword'?20:Math.round(w.damage*w.level*1.8),icon:w.ranged?'bow':'sword',description:`${w.damage} damage · ${w.interval}s attack · ${w.reach}m reach.${w.ranged?' Requires arrows in your bag. Trains Archery.':''}${w.effect?' '+w.effect.type+' for '+w.effect.duration+'s.':''} Requires level ${w.level}.`};}
   if(ITEMS[id])return {id,...ITEMS[id]};
   try{
-    const gear=registry.get(id),armor=Math.round((ARMOUR[gear.base.id]??0)*(gear.resource==='steel'?1.25:1));
+    const gear=registry.get(id),armor=gear.armor??Math.round((ARMOUR[gear.base.id]??0)*(gear.resource==='steel'?1.25:1));
     return {id,name:gear.name,type:'Equipment',slot:gear.slot,stack:1,value:Math.max(5,armor*4),armor,
-      icon:gear.slot.startsWith('ring')?'ring':gear.slot,description:`${GEAR_SLOTS[gear.slot]}. ${armor} armour. ${gear.material} construction.`,gear};
+      level:gear.level??1,icon:gear.slot.startsWith('ring')?'ring':gear.slot,description:`${GEAR_SLOTS[gear.slot]}. ${armor} armour. ${gear.material} construction. Requires level ${gear.level??1}.`,gear};
   }catch{return {id,name:id,type:'Recovered item',stack:1,value:0,icon:'parcel',description:'An item from an older save.'};}
 }

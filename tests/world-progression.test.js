@@ -42,7 +42,7 @@ test('adventurer progress records completed world actions; elapsed time alone gi
 test('world spans four kilometres and chunk generation is reproducible',()=>{
   assert.equal(WORLD_SIZE,4000);const p={x:4000,z:-3000};clampToWorld(p);assert.deepEqual(p,{x:1999.5,z:-1999.5});
   const a=random(chunkSeed(15,-8)),b=random(chunkSeed(15,-8));assert.deepEqual(Array.from({length:100},a),Array.from({length:100},b));
-  assert.equal(terrainHeight(0,0),0);assert.ok(Number.isFinite(terrainHeight(1980,1980)));
+  assert.ok(Math.abs(terrainHeight(0,0))<.5,'spawn square remains near its original elevation');assert.ok(Number.isFinite(terrainHeight(1980,1980)));
   for(let x=-1000;x<1000;x+=80)assert.ok(Math.abs(terrainHeight(x,80)-terrainHeight(x+.001,80))<.01);
 });
 

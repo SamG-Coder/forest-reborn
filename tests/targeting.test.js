@@ -8,7 +8,7 @@ const p={position:{x:0,y:0,z:0},yaw:Math.PI};
 const enemy=(id,x,z,hp=100)=>({id,position:{x,y:0,z},height:1.25,hp});
 
 test('Tab cycles live nearby targets forward and backward; target need not face player',()=>{
-  const a=enemy('a',0,2),b=enemy('b',2,2),dead=enemy('dead',0,1,0),far=enemy('far',0,40),targets=[a,b,dead,far];
+  const a=enemy('a',0,2),b=enemy('b',2,2),dead=enemy('dead',0,1,0),far=enemy('far',0,60),targets=[a,b,dead,far];
   const first=cycleTarget(null,p.position,0,targets);assert.equal(first,a);
   assert.equal(cycleTarget(first,p.position,0,targets),b);
   assert.equal(cycleTarget(b,p.position,0,targets),a);

@@ -1,4 +1,6 @@
-#damage-numbers>.combat-text{position:absolute;pointer-events:none;font-size:25px;font-weight:800;line-height:1;transform:translate(-50%,-50%);color:#ffe4a0;text-shadow:0 2px 2px #101810,1px 0 2px #101810,-1px 0 2px #101810;white-space:nowrap}
-#damage-numbers>.incoming{color:#ff897c;font-size:29px}
-#damage-numbers>.world{color:#f2efde;font-size:22px}
-#damage-numbers>.blocked{color:#a7deed;font-size:21px}
+.damage-number-layer{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.damage-number-layer>.combat-text{position:absolute;pointer-events:none;font-size:25px;font-weight:800;line-height:1;transform:translate(-50%,-50%);color:#ffe4a0;text-shadow:0 2px 2px #101810,1px 0 2px #101810,-1px 0 2px #101810;white-space:nowrap;will-change:transform,opacity}
+.damage-number-layer>.incoming{color:#ff897c;font-size:29px}
+.damage-number-layer>.world{color:#f2efde;font-size:22px}
+.damage-number-layer>.blocked{color:#a7deed;font-size:21px}
+.damage-number-layer>.combat-text[hidden]{display:none}

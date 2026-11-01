@@ -1,4 +1,7 @@
 export const SKILLS=Object.freeze({
+  riding:{name:'Riding',group:'Combat',description:'A galloping charge can strike an enemy. Spears hit harder and braced enemy spears can stop you.'},
+  archery:{name:'Archery',group:'Combat',description:'Land arrows to improve bow damage. Bows consume arrows from your bag.'},
+  fletching:{name:'Fletching',group:'Crafting',description:'Shape unstrung bows, twist flax bowstrings and assemble tipped arrows at the loom and carpenter’s bench.'},
   husbandry:{name:'Husbandry',group:'Gathering',description:'Buy shears from Orin. Shear sheep in the southeast pasture; their fleece grows back.'},
   sword:{name:'Swordsmanship',group:'Combat',description:'Earn XP by landing sword attacks on living enemies.'},
   unarmed:{name:'Unarmed',group:'Combat',description:'Earn XP by landing punches on living enemies.'},
@@ -22,6 +25,8 @@ export function awardSkill(skills,id,amount){
   if(skill.level===100)skill.xp=0;
 }
 export const GATHERING=Object.freeze({
+  flax:{skill:'herbalism',xp:8,duration:3,animation:'gather',yield:3,label:'Pulling flax'},
+  feather:{skill:'husbandry',xp:5,duration:2,animation:'gather',yield:3,label:'Collecting fallen feathers'},
   wool:{skill:'husbandry',xp:12,duration:4,animation:'shear',tool:'shears',yield:3,label:'Shearing sheep'},
   coal:{skill:'mining',xp:8,duration:3.5,animation:'mine',label:'Mining coal'},
   berries:{skill:'herbalism',xp:7,duration:2.5,animation:'gather',label:'Picking berries'},

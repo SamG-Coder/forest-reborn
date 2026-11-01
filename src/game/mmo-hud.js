@@ -1,5 +1,8 @@
+import {isWeapon,weaponDefinition} from '../game/weapon-catalog.js';
 import {createInteractiveMap} from '../ui/world-map.js';
 import {WARFRONT,inHighmere} from '../world/region-layout.js';
+import {CAMPAIGN_SITE,ASHHOLD} from '../world/battle-sites.js';
+import {CAMP_DEFINITIONS} from '../world/camp-director.js';
 import {TASK_LABELS} from '../npc/simulation.js';
 import {levelThreshold} from '../progression/save.js';
 
@@ -21,7 +24,7 @@ export function createMMOHud({player,combat,state,progress,population,worldUI,wo
     else if(selected.position.distanceTo(player.position)<3)worldUI.talk(selected);
   };
   return {update(time){
-    hud.querySelector('#weapon-label').textContent=combat.weapon==='sword'?'Practice sword':'Unarmed';
+    hud.querySelector('#weapon-label').textContent=weaponDefinition(combat.weapon)?.name??'Unarmed';
     hud.querySelector('#health-value').textContent=`${Math.ceil(combat.hp)} / 100`;
     xp.textContent=`LEVEL ${progress.data.level} · ${progress.data.xp} / ${levelThreshold(progress.data.level)} XP`;
     if(state.lock){target.dataset.kind='enemy';hud.querySelector('#target-kind').textContent=state.lock.person?(state.lock.person.type==='adventurer'?'PLAYER · PVP':'NPC · HOSTILE'):'ENEMY';hud.querySelector('#unit-interact').hidden=true;}
@@ -30,7 +33,7 @@ export function createMMOHud({player,combat,state,progress,population,worldUI,wo
       target.hidden=false;const isPlayer=selected.type==='adventurer';target.dataset.kind=isPlayer?'player':'npc';
       hud.querySelector('#target-kind').textContent=isPlayer?'PLAYER · ADVENTURER':'NPC · '+selected.role.toUpperCase();
       hud.querySelector('#target-name').textContent=selected.name+(isPlayer?' · Lv '+population.simulation.level(selected.data):'');
-      hud.querySelector('#target-health').style.width=`${selected.data?.health??100}%`;
+      hud.querySelector('#target-health').style.width=`${100*selected.target.hp/selected.target.maxHp}%`;
       const distance=selected.position.distanceTo(player.position);
       hud.querySelector('#target-status').textContent=`${selected.activity??(isPlayer?TASK_LABELS[selected.data.task]:selected.role)} · ${distance.toFixed(0)} m`;
       const button=hud.querySelector('#unit-interact');button.hidden=false;
@@ -41,7 +44,8 @@ export function createMMOHud({player,combat,state,progress,population,worldUI,wo
       const verbs={kill:'defeated',gather:'gathered at',sell:'sold supplies:',meal:'',train:''};
       for(const e of population.simulation.events.slice(-4)){const p=document.createElement('p');p.textContent=`${e.name}: ${verbs[e.type]??''} ${e.detail}`;rows.append(p);}
     }
-    map.querySelector('.minimap-title').textContent=inHighmere(player.position.x,player.position.z,30)?'Highmere':Math.hypot(player.position.x-WARFRONT.x,player.position.z-WARFRONT.z)<200?'Highmere east field':Math.hypot(player.position.x,player.position.z)<180?'Mosswake':'North road';
+    const region=[...CAMP_DEFINITIONS.map(c=>({...c,radius:35})),ASHHOLD,...(population.battleDirector?.canStage()?[CAMPAIGN_SITE]:[])].find(s=>Math.hypot(player.position.x-s.x,player.position.z-s.z)<(s.radius??s.enter));
+    map.querySelector('.minimap-title').textContent=region?.name??(inHighmere(player.position.x,player.position.z,30)?'Highmere':Math.hypot(player.position.x-WARFRONT.x,player.position.z-WARFRONT.z)<200?'Highmere east field':Math.hypot(player.position.x,player.position.z)<180?'Mosswake':'North road');
     minimap.update(time);
   }};
 }

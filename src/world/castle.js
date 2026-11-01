@@ -27,7 +27,7 @@ export async function createCastle(parent,worldMaterials){
   const blue=new THREE.MeshToonMaterial({color:'#345e83',side:THREE.DoubleSide});
   const brass=new THREE.MeshToonMaterial({color:'#d4b56e'});
   const root=new THREE.Group();root.name='Highmere hilltop castle';root.position.set(HIGHMERE.x,0,HIGHMERE.z);parent.add(root);
-  const batches=new Map(),colliders=[];
+  const batches=new Map(),colliders=[],gateObjects=[];
   function add(geometry,material,x,y,z,angle=0,uvScale=4){
     const g=geometry.index?geometry.toNonIndexed():geometry;
     if(g!==geometry)geometry.dispose();
@@ -104,6 +104,16 @@ export async function createCastle(parent,worldMaterials){
     box(trim,x,y+12.65,z,16.5,.45,4.5,angle);
     for(let i=-3;i<=3;i++)box(stone,x+tx*i*2.4,y+13.7,z+tz*i*2.4,1.25,1.4,4.3,angle);
     banner(x-tx*9,y+8,z-tz*9,angle);banner(x+tx*9,y+8,z+tz*9,angle);
+    const panel=new THREE.Group();panel.name='Highmere gate '+index;panel.position.set(x,y,z);panel.rotation.y=angle;root.add(panel);
+    const leaf=new THREE.Mesh(metricUV(new THREE.BoxGeometry(12.6,6.7,.45),2),worldMaterials['wall-timber']);leaf.position.y=3.35;leaf.castShadow=true;panel.add(leaf);
+    for(const h of [1,3.2,5.6]){const band=new THREE.Mesh(new THREE.BoxGeometry(12.7,.17,.51),dark);band.position.y=h;panel.add(band);}
+    for(let bx=-6;bx<=6;bx+=.8){const bar=new THREE.Mesh(new THREE.BoxGeometry(.1,7.3,.12),dark);bar.position.set(bx,3.65,.31);panel.add(bar);}
+    const nx=Math.sin(angle),nz=Math.cos(angle),outside=nx*x+nz*z>=0?1:-1;
+    const ex=(Math.abs(tx)*12.8+Math.abs(nx)*.7)/2,ez=(Math.abs(tz)*12.8+Math.abs(nz)*.7)/2;
+    panel.position.y=y+7.5;
+    gateObjects.push({id:'highmere-gate-'+index,position:new THREE.Vector3(HIGHMERE.x+x,y,HIGHMERE.z+z),normal:new THREE.Vector3(nx*outside,0,nz*outside),tangent:new THREE.Vector3(tx,0,tz),panel,base:y,
+      collider:{gateId:'highmere-gate-'+index,minX:HIGHMERE.x+x-ex,maxX:HIGHMERE.x+x+ex,minZ:HIGHMERE.z+z-ez,maxZ:HIGHMERE.z+z+ez},
+      update(state,dt){panel.visible=state.hp>0;panel.position.y=THREE.MathUtils.damp(panel.position.y,y+(state.closed?0:7.5),3,dt);}});
   }
   const gates=new Set(HIGHMERE_GATES);
   for(let i=0;i<HIGHMERE_WALL.length;i++){
@@ -150,16 +160,11 @@ export async function createCastle(parent,worldMaterials){
     add(g,rock,x,ground(x,z)-1.8,z,0,5);
   }
 
-  // Lower market: staggered stalls rather than another defensive grid.
-  for(const [x,z,a]of [[-17,4,.13],[-20,10,-.06],[-17,30,.1],[20,3,-.1],[21,27,.06]]){
-    const y=ground(x,z);box(worldMaterials['wall-timber'],x,y+.55,z,4.6,1.1,2,a);solid(x,z,4.6,2,a);
-    box(blue,x,y+3,z,5.6,.12,3.5,a);
-    for(const side of [-1,1])box(worldMaterials['wall-timber'],x+side*2.45,y+1.5,z,.14,3,.14,a);
-  }
+  // Market stalls and their assigned workers are owned by settlement-details.
   const fy=ground(0,19),fountain=createFountain(root,{stone,trim,x:0,y:fy,z:19});
   foundation(Array.from({length:40},(_,i)=>[Math.sin(i*TAU/40)*3.9,19+Math.cos(i*TAU/40)*3.9]),fy+.1);solid(0,19,7.8,7.8);
   for(const [material,parts]of batches){const geometry=mergeGeometries(parts);parts.forEach(g=>g.dispose());const mesh=new THREE.Mesh(geometry,material);mesh.castShadow=mesh.receiveShadow=true;root.add(mesh);}
-  return {root,colliders,update:seconds=>{fountain.update(seconds);hall.update(seconds);},dispose(){
+  return {root,colliders,gates:gateObjects,interiorLights:hall.fixtures,update:seconds=>{fountain.update(seconds);hall.update(seconds);},dispose(){
     fountain.dispose();hall.dispose();
     root.removeFromParent();root.traverse(node=>{if(node.isMesh)node.geometry.dispose();});
     for(const mat of Object.values(textures)){mat.map.dispose();mat.normalMap.dispose();mat.userData.roughnessMap.dispose();mat.dispose();}

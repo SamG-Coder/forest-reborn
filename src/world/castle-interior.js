@@ -45,10 +45,10 @@ export function createCastleHall(parent,{stone,wood,base}){
     const crest=new THREE.Mesh(new THREE.TorusGeometry(.5,.055,6,24),gold);crest.position.set(x,base+3.8,-90.84);root.add(crest);
     box(x,3.45,-90.83,.09,1.4,.02,gold);
   }
+  const fixtures=[];
   for(const x of [-23,-1])for(const z of [-72,-87]){
     box(x,3.25,z,.25,.1,.25,gold);const flame=box(x,3.5,z,.12,.4,.12,lightMaterial);flame.rotation.z=.08;
-    const light=new THREE.PointLight('#ffbd76',7,11,2);light.position.set(x,base+3.4,z);root.add(light);
+    fixtures.push({root:flame,flame,position:new THREE.Vector3(HIGHMERE.x+x,base+3.4,HIGHMERE.z+z),phase:fixtures.length,alwaysOn:true,power:6.5,range:11});
   }
-  const lamps=root.children.filter(o=>o.isPointLight);
-  return {root,colliders,update(time){lamps.forEach((lamp,i)=>lamp.intensity=6.5+Math.sin(time*2.7+i)*.35);},dispose(){root.removeFromParent();root.traverse(o=>o.geometry?.dispose());[gold,fabric,lightMaterial,paper,linen].forEach(m=>m.dispose());}};
+  return {root,colliders,fixtures,update(){},dispose(){root.removeFromParent();root.traverse(o=>o.geometry?.dispose());[gold,fabric,lightMaterial,paper,linen].forEach(m=>m.dispose());}};
 }

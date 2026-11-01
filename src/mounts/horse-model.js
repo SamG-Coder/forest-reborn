@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {horseStride,horseLegOffsets,horseRunBlend} from './gait.js';
 import {mountDefinition} from './catalog.js';
 
 /** Smooth cross-section loft, with metric longitudinal UVs and closed end caps. */
@@ -72,13 +73,13 @@ export function createHorse({id='bay',leatherMap=null}={}){
     add(body,strand([[s*.118,1.64,1.43],[s*.22,1.61,.80],[s*.21,1.85,.39]],.008),leather);
   }
   let phase=0,time=0;
-  return {root,body,legs,head,tail,definition,seatHeight:1.64,
+  return {root,body,legs,head,tail,definition,seatHeight:1.64,get phase(){return phase;},
     update(dt,speed=0){
-      time+=dt;const moving=THREE.MathUtils.smoothstep(speed,.03,.6),run=THREE.MathUtils.smoothstep(speed,4,7);
-      phase+=speed*dt/THREE.MathUtils.lerp(2.6,4.8,run);const t=phase*Math.PI*2;
+      time+=dt;const moving=THREE.MathUtils.smoothstep(speed,.03,.6),run=horseRunBlend(speed),offsets=horseLegOffsets(speed);
+      phase+=speed*dt/horseStride(speed);const t=phase*Math.PI*2;
       body.position.y=moving*(.012*Math.sin(t*2)+run*.028*Math.cos(t*2));body.rotation.x=moving*run*.025*Math.sin(t);
       for(const [i,leg]of legs.entries()){
-        const offset=THREE.MathUtils.lerp([0,.5,.75,.25][i],[0,.12,.55,.43][i],run)*Math.PI*2,a=t+offset;
+        const a=t+offsets[i]*Math.PI*2;
         leg.upper.rotation.x=Math.sin(a)*THREE.MathUtils.lerp(.38,.70,run)*moving;
         leg.lower.rotation.x=Math.max(0,-Math.cos(a))*(leg.front?-1:1)*THREE.MathUtils.lerp(.50,1.0,run)*moving;
         leg.foot.rotation.x=-leg.upper.rotation.x-leg.lower.rotation.x;

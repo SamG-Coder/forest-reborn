@@ -6,6 +6,9 @@ import {roadEdgeDistance} from './layout.js';
 import {inHighmere,HIGHMERE_PLOTS,KEEP_FOOTPRINTS,HIGHMERE} from './region-layout.js';
 import {treePlacements} from './vegetation-placement.js';
 import {TreeHarvest} from './tree-harvest.js';
+import {isWater,mountainHeight,waterSample} from './watersheds.js';
+import {sampleTerrainChunk} from './terrain-chunk.js';
+import {TerrainStream} from './terrain-stream.js';
 
 function cards(count,width,height,seed,canopy=false){
   const rng=random(seed),parts=[];
@@ -34,15 +37,14 @@ function pineCanopy(){
   }
   const geometry=mergeGeometries(parts);parts.forEach(g=>g.dispose());return geometry;
 }
-function ground(cx,cz){
+function ground(cx,cz,samples=sampleTerrainChunk(cx,cz)){
   const g=new THREE.PlaneGeometry(CHUNK_SIZE,CHUNK_SIZE,64,64);g.rotateX(-Math.PI/2);
-  const p=g.attributes.position,uv=g.attributes.uv,road=[];
+  const p=g.attributes.position,uv=g.attributes.uv;
   for(let i=0;i<p.count;i++){
-    const x=p.getX(i)+cx,z=p.getZ(i)+cz;p.setY(i,terrainHeight(x,z));
+    const x=p.getX(i)+cx,z=p.getZ(i)+cz;p.setY(i,samples.heights[i]);
     uv.setXY(i,x/7,z/7);
-    road.push(THREE.MathUtils.clamp((1.6-roadEdgeDistance(x,z))/3.0,0,1));
   }
-  g.setAttribute('roadWeight',new THREE.Float32BufferAttribute(road,1));g.computeVertexNormals();return g;
+  g.setAttribute('roadWeight',new THREE.BufferAttribute(samples.roads,1));g.setAttribute('bankWeight',new THREE.BufferAttribute(samples.banks,1));g.computeVertexNormals();return g;
 }
 
 /** A bounded cache of deterministic chunks, not a 4 km mesh kept in memory. */
@@ -70,15 +72,15 @@ export async function createForest(scene,worldMaterials){
   geometry.shortGrass=cards(3,.62,.28,35);geometry.dryGrass=cards(2,.55,.85,29);
   Object.assign(materials,{pineTrunk:worldMaterials.bark,pineLeaves:foliage('pine-leaves'),birchTrunk:worldMaterials['birch-bark'],birchLeaves:foliage('leaves')});materials.birchLeaves.color.set('#c4d6a7');
   Object.assign(geometry,{pineTrunk:new THREE.CylinderGeometry(.06,.28,6.5,8,4).translate(0,3.25,0),pineLeaves:pineCanopy(),birchTrunk:treeTrunk(),birchLeaves:geometry.leaves});
-  const chunks=new Map(),dummy=new THREE.Object3D(),treeHarvest=new TreeHarvest();let center='',queue=[],colliders=[];
+  const chunks=new Map(),stream=new TerrainStream(),dummy=new THREE.Object3D(),treeHarvest=new TreeHarvest(),falling=new Map();let center='',queue=[],colliders=[],treeRevision=-1,collidersDirty=true;
   function batch(group,name,transforms){
     const mesh=new THREE.InstancedMesh(geometry[name],materials[name],transforms.length);
     for(let i=0;i<transforms.length;i++){const t=transforms[i];dummy.position.set(t.x,t.y,t.z);dummy.rotation.set(0,t.a,0);dummy.scale.setScalar(t.s);dummy.updateMatrix();mesh.setMatrixAt(i,dummy.matrix);}
     mesh.castShadow=/trunk|leaves/i.test(name);mesh.receiveShadow=true;mesh.computeBoundingSphere();group.add(mesh);return mesh;
   }
-  function build(x,z,near){
+  function build(x,z,near,samples){
     const cx=(x+.5)*CHUNK_SIZE,cz=(z+.5)*CHUNK_SIZE,rng=random(chunkSeed(x,z)),group=new THREE.Group();group.position.set(cx,0,cz);scene.add(group);
-    const floor=new THREE.Mesh(ground(cx,cz),materials.ground);floor.receiveShadow=true;group.add(floor);
+    const floor=new THREE.Mesh(ground(cx,cz,samples),materials.ground);floor.receiveShadow=true;group.add(floor);
     const trees=[],shrubs=[],grass=[],shortGrass=[],dryGrass=[],ferns=[],solids=[];
     for(const [index,t]of treePlacements(x,z,rng).entries()){
       const id=`tree:${x}:${z}:${index}`,node=treeHarvest.register(id,t.x,t.z,.32*t.s);
@@ -87,7 +89,7 @@ export async function createForest(scene,worldMaterials){
     }
     for(let i=0;i<(near?950:60);i++){
       const px=(rng()-.5)*CHUNK_SIZE,pz=(rng()-.5)*CHUNK_SIZE,wx=px+cx,wz=pz+cz;
-      if(inTown(wx,wz)||roadDistance(wx,wz)<3)continue;
+      if(inTown(wx,wz)||roadDistance(wx,wz)<3||isWater(wx,wz,1.8)||mountainHeight(wx,wz)>65)continue;
       if(inHighmere(wx,wz,8)){
         if(HIGHMERE_PLOTS.some(p=>Math.abs(wx-p.x)<p.w/2+2&&Math.abs(wz-p.z)<p.d/2+2))continue;
         if(KEEP_FOOTPRINTS.some(p=>Math.abs(wx-HIGHMERE.x-p.x)<(p.w/2||p.r)+2&&Math.abs(wz-HIGHMERE.z-p.z)<(p.d/2||p.r)+2))continue;
@@ -105,24 +107,34 @@ export async function createForest(scene,worldMaterials){
       selected.forEach((t,index)=>{t.render={trunk,leaves,index};});
     }
     const stump=batch(group,'stump',trees.map(t=>({...t,s:0})));
-    batch(group,'shrub',shrubs);if(near){batch(group,'grass',grass);batch(group,'shortGrass',shortGrass);batch(group,'dryGrass',dryGrass);batch(group,'fern',ferns);}
-    chunks.set(`${x},${z}`,{group,solids,near,trees,treeMeshes,stump});
+    batch(group,'shrub',shrubs);const detail=[];
+    if(near){detail.push(batch(group,'grass',grass),batch(group,'shortGrass',shortGrass),batch(group,'dryGrass',dryGrass),batch(group,'fern',ferns));}
+    chunks.set(`${x},${z}`,{group,solids,near,hasDetail:near,detail,samples,trees,treeMeshes,stump});
+    treeRevision=-1;collidersDirty=true;
   }
-  function remove(key){const chunk=chunks.get(key);for(const tree of chunk.trees)treeHarvest.unregister(tree.id);chunk.group.traverse(o=>{if(o.isInstancedMesh)o.dispose();else if(o.isMesh)o.geometry.dispose();});chunk.group.removeFromParent();chunks.delete(key);}
+  function remove(key){const chunk=chunks.get(key);for(const tree of chunk.trees){treeHarvest.unregister(tree.id);falling.delete(tree.id);}chunk.group.traverse(o=>{if(o.isInstancedMesh)o.dispose();else if(o.isMesh)o.geometry.dispose();});chunk.group.removeFromParent();chunks.delete(key);collidersDirty=true;}
   function updateFelledTrees(){
-    for(const chunk of chunks.values()){
-      let changed=false;
-      chunk.trees.forEach((tree,index)=>{
+    // Standing trees never change. Only inspect the full cache after a harvest,
+    // respawn or chunk load; animate the small set that is actually falling.
+    if(treeRevision!==treeHarvest.revision){
+      for(const chunk of chunks.values())chunk.trees.forEach((tree,index)=>{
+        const state=treeHarvest.felled.get(tree.id);
+        if(state||tree.pose!==-1)falling.set(tree.id,{tree,index,chunk});
+      });
+      treeRevision=treeHarvest.revision;collidersDirty=true;
+    }
+    const changed=new Set();
+    for(const [id,{tree,index,chunk}]of falling){
         const state=treeHarvest.felled.get(tree.id),age=state?(treeHarvest.now-state.felledAt)/1000:-1;
         const pose=state?Math.min(3,Math.max(0,age)):-1;
-        if(tree.pose===pose)return;tree.pose=pose;changed=true;
+        if(tree.pose===pose){if(pose===3||pose===-1)falling.delete(id);continue;}tree.pose=pose;changed.add(chunk);
         const tilt=age<0?0:Math.min(1,age/1.5)**2*1.45;
         dummy.position.set(tree.x,tree.y,tree.z);dummy.rotation.set(tilt,tree.a,0);dummy.scale.setScalar(age>=3?0:tree.s);dummy.updateMatrix();
         tree.render.trunk.setMatrixAt(tree.render.index,dummy.matrix);tree.render.leaves.setMatrixAt(tree.render.index,dummy.matrix);tree.node.root.visible=!state;
         dummy.rotation.set(0,tree.a,0);dummy.scale.setScalar(state?tree.s:0);dummy.updateMatrix();chunk.stump.setMatrixAt(index,dummy.matrix);
-      });
-      if(changed){for(const mesh of chunk.treeMeshes)mesh.instanceMatrix.needsUpdate=true;chunk.stump.instanceMatrix.needsUpdate=true;chunk.stump.computeBoundingSphere();}
+        if(pose===3||pose===-1)falling.delete(id);
     }
+    for(const chunk of changed){for(const mesh of chunk.treeMeshes){mesh.instanceMatrix.needsUpdate=true;mesh.computeBoundingSphere();}chunk.stump.instanceMatrix.needsUpdate=true;chunk.stump.computeBoundingSphere();}
   }
   function update(position,seconds,immediate=false){
     clock.value=seconds;const x=Math.floor(position.x/CHUNK_SIZE),z=Math.floor(position.z/CHUNK_SIZE),next=`${x},${z}`;
@@ -131,16 +143,22 @@ export async function createForest(scene,worldMaterials){
       for(let dz=-3;dz<=3;dz++)for(let dx=-3;dx<=3;dx++){
         const a=x+dx,b=z+dz;if(a<-WORLD_HALF/CHUNK_SIZE||a>=WORLD_HALF/CHUNK_SIZE||b<-WORLD_HALF/CHUNK_SIZE||b>=WORLD_HALF/CHUNK_SIZE)continue;
         const key=`${a},${b}`,near=Math.max(Math.abs(dx),Math.abs(dz))<=1;desired.set(key,true);
-        if(chunks.has(key)&&chunks.get(key).near!==near)remove(key);
-        if(!chunks.has(key))queue.push({a,b,near,d:dx*dx+dz*dz});
+        const chunk=chunks.get(key);
+        if(chunk&&chunk.near!==near){chunk.near=near;chunk.detail.forEach(mesh=>mesh.visible=near);collidersDirty=true;}
+        if(!chunk||near&&!chunk.hasDetail)queue.push({a,b,near,d:dx*dx+dz*dz});
       }
       for(const key of chunks.keys())if(!desired.has(key))remove(key);
       queue.sort((a,b)=>a.d-b.d);
     }
-    for(let i=0,n=immediate?9:1;i<n&&queue.length;i++){const q=queue.shift();build(q.a,q.b,q.near);}
-    updateFelledTrees();colliders=[...chunks.values()].filter(c=>c.near).flatMap(c=>c.solids).filter(c=>!treeHarvest.felled.has(c.id));
+    for(let i=0,n=immediate?9:1;i<n&&queue.length;i++){
+      const q=queue[0],key=`${q.a},${q.b}`,samples=chunks.get(key)?.samples??stream.take(key);
+      if(!immediate&&!samples){if(stream.error)throw stream.error;stream.request(key,(q.a+.5)*CHUNK_SIZE,(q.b+.5)*CHUNK_SIZE,CHUNK_SIZE);break;}
+      queue.shift();if(chunks.has(key))remove(key);build(q.a,q.b,q.near,samples);
+    }
+    if(queue.length&&!stream.pending){const q=queue[0];stream.request(`${q.a},${q.b}`,(q.a+.5)*CHUNK_SIZE,(q.b+.5)*CHUNK_SIZE,CHUNK_SIZE);}
+    updateFelledTrees();if(collidersDirty){colliders=[...chunks.values()].filter(c=>c.near).flatMap(c=>c.solids).filter(c=>!treeHarvest.felled.has(c.id));collidersDirty=false;}
   }
   update(new THREE.Vector3(),0,true);
   return {update,textures,treeHarvest,get colliders(){return colliders;},stats:()=>({loadedChunks:chunks.size,queuedChunks:queue.length,worldSize:4000}),
-    dispose(){for(const key of [...chunks.keys()])remove(key);Object.values(geometry).forEach(g=>g.dispose());Object.values(materials).forEach(m=>m.dispose());Object.values(textures).forEach(t=>t.dispose());}};
+    dispose(){stream.dispose();for(const key of [...chunks.keys()])remove(key);Object.values(geometry).forEach(g=>g.dispose());Object.values(materials).forEach(m=>m.dispose());Object.values(textures).forEach(t=>t.dispose());}};
 }

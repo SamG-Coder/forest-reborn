@@ -1,3 +1,4 @@
+import {CAMPAIGN_ROADS} from './battle-sites.js';
 // World-space definitions are cheap. Geometry and actors live in lazy zone factories.
 export const HIGHMERE = Object.freeze({id:'highmere',name:'Highmere',x:850,z:-850,enter:300,leave:390});
 export const WARFRONT = Object.freeze({id:'highmere-field',name:'Highmere east field',x:1260,z:-831,enter:180,leave:250});
@@ -20,6 +21,7 @@ export const HIGHMERE_PLOTS = Object.freeze([
   ...[-73,-51,48,69].map((x,i)=>plot(`highmere-home-south-${i}`,'',x,76+(i%2)*3,12,10,4.7,{angle:Math.PI+(i-1.5)*.09})),
 ]);
 export const HIGHMERE_ROADS = Object.freeze([
+  ...CAMPAIGN_ROADS,
   {width:9,points:[[850,-722],[850,-740],[850,-745],[850,-812],[850,-821],[858,-826],[858,-838],[850,-844],[850,-882]]},
   {width:5.5,points:[[850,-882],[830,-882],[810,-889],[810,-899],[819,-906],[838,-906],[838,-915]]},
   {width:7,points:[[749,-831],[812,-831],[840,-831],[842,-840],[858,-840],[867,-831],[915,-831],[960,-831],[1120,-831],[1260,-831]]},

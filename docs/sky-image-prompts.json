@@ -1,0 +1,22 @@
+[
+  {
+    "name": "night-stars",
+    "transparent": false,
+    "prompt": "Use case: stylized-concept. Asset type: panoramic equirectangular starfield texture for the sky sphere of a 3D anime fantasy game, 2:1 wide image. Entire image deep almost-black navy night sky dotted with hundreds of very fine small white and pale blue stars of varied faint brightness, understated diffuse band of stardust off centre. Delicate hand-painted anime night atmosphere, lots of dark negative space, high resolution fine points not giant sparkles. No terrain, horizon line, foreground, trees, moon, sun, clouds, text or border. Horizontally seamless panorama. Top and bottom edges almost uniform dark navy to avoid pole distortion."
+  },
+  {
+    "name": "cloud-bank",
+    "transparent": true,
+    "prompt": "Use case: stylized-concept. Asset type: transparent RGBA cloud cutout for a 3D anime game's moving sky billboard. A single wide group of beautiful soft white cumulus clouds, rounded large lobes, airy thin wisps towards both sides, pale cool lavender shading underneath. Hand-painted anime background art with soft edges and readable shapes. Cloud occupies central 80% of wide frame, transparent margin on all sides, genuinely transparent background. No sky gradient, ground, sun, rays, text, border or drop shadow. Landscape 2:1."
+  },
+  {
+    "name": "sun-glow",
+    "transparent": true,
+    "prompt": "Use case: stylized-concept. Asset type: transparent sun sprite for anime game sky. A simple round warm white sun disc with soft pale golden halo falling smoothly to full transparency, restrained fine painterly bloom. Centered square. No visible rays, lens flare, objects, horizon, blue sky, text, border or hard square edge. Genuine transparent background outside disc and glow."
+  },
+  {
+    "name": "water-ripples",
+    "transparent": false,
+    "prompt": "Use case: stylized-concept. Asset type: seamless square grayscale HEIGHT texture for animated river and lake water shader. Top-down view of gentle small water ripples, interlacing soft flowing sinuous wavelets and tiny circular ripple interference. Neutral mid-gray base with subtle lighter narrow crests and darker troughs. Uniform detail everywhere, no lighting gradient or shadows. A height map only, no blue color or specular reflections, not a landscape picture. Hand-painted smooth natural pattern, not angular cellular mosaic. Full-bleed texture seamless on all four edges. No text, border, stones, ground or objects. 1024 square."
+  }
+]

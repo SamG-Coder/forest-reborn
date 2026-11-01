@@ -1,5 +1,6 @@
 import {terrainHeight,WORLD_HALF,CHUNK_SIZE} from '../world/terrain.js';
 import {treePlacements} from '../world/vegetation-placement.js';
+import {waterSample} from '../world/watersheds.js';
 
 const mix=(a,b,t)=>a+(b-a)*t;
 const limit=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -18,7 +19,8 @@ export class TerrainMap {
       const dry=limit((h+4)/55,0,1),stone=limit((slope-.35)*1.2,0,.8);
       const noise=Math.sin(wx*1.7+wz*2.3)*Math.sin(wx*.57-wz*.86)*3;
       const contour=Math.abs(h/5-Math.round(h/5))<.035?-.07:0;
-      const rgb=[mix(83,145,dry),mix(113,139,dry),mix(78,102,dry)].map((v,j)=>mix(v,[148,145,127][j],stone)*(relief+contour)+noise);
+      const w=waterSample(wx,wz);
+      const rgb=w&&w.shore<0?[57,123,143].map(v=>v+15*Math.max(0,1+(w.shore/12))):[mix(83,145,dry),mix(113,139,dry),mix(78,102,dry)].map((v,j)=>mix(v,[148,145,127][j],stone)*(relief+contour)+noise);
       const o=(z*size+x)*4,outside=Math.abs(wx)>WORLD_HALF||Math.abs(wz)>WORLD_HALF;
       image.data[o]=outside?29:rgb[0];image.data[o+1]=outside?47:rgb[1];image.data[o+2]=outside?44:rgb[2];image.data[o+3]=255;
     }

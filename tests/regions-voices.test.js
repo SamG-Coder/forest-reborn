@@ -42,8 +42,8 @@ test('distant town uses a small local navigation grid with world-space results',
 });
 test('battle hits have living targets in range and cannot occur during separation',()=>{
   const battle=new BattleSimulation(600);let events=0;
-  for(let i=0;i<400;i++)battle.update(.1,(target,damage)=>{
-    const attacker=battle.actors[target.opponent];assert.ok(Math.hypot(attacker.x-target.x,attacker.z-target.z)<=2.101);assert.ok(damage>0);events++;
+  for(let i=0;i<400;i++)battle.update(.1,(target,damage,attacker,kind)=>{
+    if(kind==='strike')assert.ok(Math.hypot(attacker.x-target.x,attacker.z-target.z)<=attacker.reach+.001);assert.ok(damage>0);events++;
   });
   assert.equal(events,battle.hits);assert.ok(battle.defeats>0);
   const isolated=new BattleSimulation(2);isolated.actors[1].x+=100;isolated.update(.1,()=>assert.fail('hit from far away'));

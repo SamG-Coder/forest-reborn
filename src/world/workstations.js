@@ -13,7 +13,7 @@ export const WORKSTATIONS=Object.freeze([
   {id:'leatherworker',name:'Leatherworking table',building:'Smith & Leather',plot:'smith',x:25,z:16,angle:-Math.PI/2,art:5,skill:'tailoring',description:'Prepare hides, cut leather and stitch boots and armour.'},
 ]);
 
-const cityPositions={forge:[818,-806.5],weaver:[885,-853.5],kitchen:[883,-806.5]};
+const cityPositions={forge:[818,-806.5],weaver:[885,-853.5],kitchen:[883,-806.5],carpenter:[810,-846]};
 export const HIGHMERE_WORKSTATIONS=Object.freeze(WORKSTATIONS.filter(s=>cityPositions[s.id]).map(s=>({
   ...s,x:cityPositions[s.id][0],z:cityPositions[s.id][1],angle:0,building:'Highmere · '+s.building,
 })));

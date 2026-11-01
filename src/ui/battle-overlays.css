@@ -1,0 +1,6 @@
+.battle-overlays{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;font:13px/1.5 'DM Sans',sans-serif}
+.battle-cluster-card{position:absolute;transform:translate(-50%,-100%);padding:7px 12px;border:1px solid #a6c1c566;border-top:3px solid #78bbdd;border-radius:5px;background:#172c32ee;color:#eef2e9;box-shadow:0 3px 14px #0003;white-space:pre;text-align:center;text-shadow:0 1px 2px #000}
+.battle-cluster-card[data-team="1"]{border-top-color:#e19072}.battle-cluster-card.pinned{outline:1px solid #d8c68a}
+.battle-cluster-hint{position:absolute;padding:5px 9px;border-radius:4px;background:#172c32df;color:#f3e8bc;font-size:12px}
+.battle-overlays [hidden]{display:none}
+.damage-number-layer .combat-text[data-team="0"]{color:#b3def7}.damage-number-layer .combat-text[data-team="1"]{color:#ffc6a9}

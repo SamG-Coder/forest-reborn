@@ -1,0 +1,16 @@
+export const ARCHERY_RECIPES=Object.freeze([
+  {id:'bow-stave',name:'Season and shape bow stave',station:'carpenter',skill:'woodworking',ingredients:{wood:3},output:'bowStave',count:1,xp:14,duration:5,animation:'saw'},
+  {id:'flax-fibre',name:'Dress flax fibres',station:'weaver',skill:'tailoring',ingredients:{flax:3},output:'flaxFibre',count:3,xp:10,duration:4,animation:'sew'},
+  {id:'bowstring',name:'Twist linen bowstring',station:'weaver',skill:'fletching',ingredients:{flaxFibre:3},output:'bowstring',count:1,xp:14,duration:4,animation:'sew'},
+  {id:'flax-linen',name:'Weave flax linen',station:'weaver',skill:'tailoring',ingredients:{flaxFibre:3},output:'linen',count:2,xp:14,duration:5,animation:'sew'},
+  {id:'arrow-shafts',name:'Shave arrow shafts',station:'carpenter',skill:'fletching',ingredients:{wood:1},output:'arrowShaft',count:12,xp:12,duration:4,animation:'saw'},
+  {id:'field-arrows',name:'Fletch field arrows',station:'carpenter',skill:'fletching',ingredients:{arrowShaft:12,flaxFibre:1,feather:3},output:'arrow.wood',count:12,xp:20,duration:5,animation:'sew'},
+  {id:'iron-arrowheads',name:'Forge broadheads',station:'forge',skill:'smithing',minLevel:2,ingredients:{ironIngot:1},output:'ironArrowhead',count:12,xp:18,duration:4,animation:'hammer'},
+  {id:'bodkin-tips',name:'Forge steel bodkin tips',station:'forge',skill:'smithing',minLevel:5,ingredients:{steelIngot:1},output:'bodkinTip',count:12,xp:30,duration:5,animation:'hammer'},
+  {id:'iron-arrows',name:'Fletch broadhead arrows',station:'carpenter',skill:'fletching',minLevel:3,ingredients:{arrowShaft:12,ironArrowhead:12,feather:3,flaxFibre:1},output:'arrow.iron',count:12,xp:35,duration:5,animation:'sew'},
+  {id:'bodkin-arrows',name:'Fletch bodkin arrows',station:'carpenter',skill:'fletching',minLevel:5,ingredients:{arrowShaft:12,bodkinTip:12,feather:3,flaxFibre:1},output:'arrow.bodkin',count:12,xp:50,duration:6,animation:'sew'},
+  {id:'unstrung-shortbow',name:'Carve unstrung shortbow',station:'carpenter',skill:'fletching',ingredients:{bowStave:1,flaxFibre:1},output:'unstrungShortbow',count:1,xp:25,duration:7,animation:'saw'},
+  {id:'unstrung-longbow',name:'Tiller unstrung warbow',station:'carpenter',skill:'fletching',minLevel:5,ingredients:{bowStave:2,leather:1},output:'unstrungLongbow',count:1,xp:55,duration:9,animation:'saw'},
+  {id:'shortbow',name:'String ash shortbow',station:'carpenter',skill:'fletching',ingredients:{unstrungShortbow:1,bowstring:1},output:'weapon.shortbow',count:1,xp:16,duration:4,animation:'sew'},
+  {id:'longbow',name:'String yew warbow',station:'carpenter',skill:'fletching',minLevel:5,ingredients:{unstrungLongbow:1,bowstring:1},output:'weapon.longbow',count:1,xp:25,duration:4,animation:'sew'},
+]);

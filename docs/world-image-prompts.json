@@ -1,0 +1,18 @@
+[
+  {
+    "name": "meadow-grass",
+    "prompt": "Use case: stylized-concept. Asset type: seamless square albedo texture for a 3D anime fantasy game's ground. Top-down orthographic close view of dense, short meadow grass, soft painted blades in clustered tufts, clover scattered sparsely, moss green and fresh sage greens with subtle warm yellow tips. Rich hand-painted Japanese animation background material, readable at distance, moderate contrast. Uniform flat diffuse illumination, absolutely no perspective, horizon, shadows or objects. Entire image is only ground surface. All four edges tile seamlessly. No text or border. 1024 square."
+  },
+  {
+    "name": "dry-grass-earth",
+    "prompt": "Use case: stylized-concept. Asset type: seamless square albedo texture for a 3D anime fantasy game ground. Top-down orthographic dry meadow surface: fine straw coloured grass mixed with faded olive green grass and irregular patches of warm pale brown compacted earth. Stylized hand-painted animation background texture, delicate small clusters, restrained contrast, natural non-repeating pattern. Flat neutral diffuse lighting. No perspective, horizon, directional shadows, objects or text. Seamless all edges, full bleed ground only, 1024 square."
+  },
+  {
+    "name": "forest-earth",
+    "prompt": "Use case: stylized-concept. Asset type: seamless square albedo texture for a 3D anime fantasy ground. Top-down orthographic forest soil, soft warm umber dirt, small rounded pebbles, scattered tiny weathered leaves and roots with occasional moss flecks. Clearly different from a grassy meadow. Hand-painted anime background style, no photorealism, fine convincing surface detail without harsh contrast. Flat neutral diffuse illumination with no directional shadows. Full image ground surface only, no horizon or large objects, seamless all four edges. No labels or border. 1024 square."
+  },
+  {
+    "name": "mountain-stone",
+    "prompt": "Use case: stylized-concept. Asset type: seamless square rock albedo for actual 3D mountain terrain, not a landscape picture. Full frame face-on weathered gray limestone stone surface, broad irregular angular planes and strata, cool slate gray with warm beige seams, understated moss in a few cracks. Hand-painted Japanese anime fantasy background art material, soft brush grain, clean readable shapes and moderate contrast. Uniform diffuse light, no baked directional illumination or cast shadows. No sky, mountains silhouette, horizon, text, or border. All four edges seamless. 1024 square."
+  }
+]

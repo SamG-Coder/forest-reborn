@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-export const TARGET_RANGE = 35;
+export const TARGET_RANGE = 45;
 export const targetDistance = (position, target) => Math.hypot(target.position.x-position.x, target.position.z-position.z);
 export function inAttackRange(position, target, reach) {
   return Boolean(target && target.hp > 0 && targetDistance(position,target) <= reach && Math.abs(target.position.y-position.y) < 1.7);

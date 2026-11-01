@@ -1,3 +1,4 @@
+import {isWeapon,weaponDefinition} from '../game/weapon-catalog.js';
 import {itemArt} from './item-icons.js';
 
 export function decorateHotbar(){
@@ -9,5 +10,5 @@ export function decorateHotbar(){
   }
   const attack=document.querySelector('#attack'),icon=document.createElement('span');icon.className='attack-icon';attack.prepend(icon);
   let previous=null;
-  return weapon=>{if(weapon===previous)return;previous=weapon;icon.innerHTML=itemArt({id:weapon==='sword'?'sword':'unarmed',icon:'sword'});};
+  return weapon=>{if(weapon===previous)return;previous=weapon;icon.innerHTML=itemArt({id:isWeapon(weapon)?weapon:'unarmed',icon:'sword'});};
 }

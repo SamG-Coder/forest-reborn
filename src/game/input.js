@@ -1,10 +1,12 @@
 export class GameInput {
   constructor(canvas){
-    this.canvas=canvas;this.keys=new Set();this.buttons=new Map();this.lookX=0;this.lookY=0;this.zoom=0;this.attacks=[];this.selections=[];this.jumps=0;this.enabled=false;this.drag=false;this.chord=false;
+    this.canvas=canvas;this.keys=new Set();this.buttons=new Map();this.lookX=0;this.lookY=0;this.zoom=0;this.attacks=[];this.selections=[];this.jumps=0;this.enabled=false;this.drag=false;this.chord=false;this.autoRun=false;
     window.addEventListener('keydown',e=>{
-      if(!this.enabled||/INPUT|SELECT|TEXTAREA/.test(e.target.tagName))return;
-      if(['Space','Tab','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();
+      if(!this.enabled||/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)||e.target.isContentEditable)return;
+      if(['NumLock','Space','Tab','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();
       this.keys.add(e.code);if(e.repeat)return;
+      if(e.code==='NumLock')this.autoRun=!this.autoRun;
+      else if(['KeyW','KeyS','Escape'].includes(e.code))this.autoRun=false;
       if(e.code==='KeyJ'||e.code==='Digit1')this.attacks.push('attack');if(e.code==='Space')this.jumps++;
     });
     window.addEventListener('keyup',e=>{this.keys.delete(e.code);});
@@ -32,11 +34,11 @@ export class GameInput {
     window.addEventListener('blur',()=>this.clear());canvas.addEventListener('pointercancel',()=>this.clear());
     document.addEventListener('visibilitychange',()=>{if(document.hidden)this.clear();});
   }
-  clear(){this.keys.clear();this.buttons.clear();this.attacks.length=0;this.selections.length=0;this.jumps=0;this.drag=false;this.chord=false;this.lookX=this.lookY=this.zoom=0;this.canvas.style.cursor='';}
+  clear(){this.keys.clear();this.buttons.clear();this.attacks.length=0;this.selections.length=0;this.jumps=0;this.drag=false;this.chord=false;this.autoRun=false;this.lookX=this.lookY=this.zoom=0;this.canvas.style.cursor='';}
   get steering(){return this.buttons.has(2);}
   get freeLooking(){return !this.steering&&(this.buttons.has(0)||this.buttons.has(1));}
   get mouseForward(){return this.buttons.has(0)&&this.buttons.has(2);}
   get turn(){return this.steering?0:Number(this.keys.has('KeyA'))-Number(this.keys.has('KeyD'));}
-  get movement(){return {x:Number(this.keys.has('KeyE'))-Number(this.keys.has('KeyQ'))+(this.steering?Number(this.keys.has('KeyD'))-Number(this.keys.has('KeyA')):0),z:Number(this.mouseForward||this.keys.has('KeyW'))-Number(this.keys.has('KeyS'))};}
-  get running(){return this.keys.has('ShiftLeft')||this.keys.has('ShiftRight');}
+  get movement(){return {x:Number(this.keys.has('KeyE'))-Number(this.keys.has('KeyQ'))+(this.steering?Number(this.keys.has('KeyD'))-Number(this.keys.has('KeyA')):0),z:Number(this.autoRun||this.mouseForward||this.keys.has('KeyW'))-Number(this.keys.has('KeyS'))};}
+  get running(){return this.autoRun||this.keys.has('ShiftLeft')||this.keys.has('ShiftRight');}
 }

@@ -4,7 +4,9 @@ import { locomotionArm, swordArm, applyArmFK } from './arm-motion.js';
 import { poseHand, alignPunchWrist } from './hand-poses.js';
 import { alignSwordAction, alignSwordReady } from './sword-alignment.js';
 import { GAITS, blendGaits } from './locomotion.js';
+import {alignWeaponFamily} from './weapon-motion.js';
 import {sampleSwordCut} from './sword-motion.js';
+import {weaponAction} from './weapon-catalog.js';
 
 const { clamp, lerp, smoothstep, damp } = THREE.MathUtils;
 const vector = (x, y, z) => new THREE.Vector3(x, y, z);
@@ -28,7 +30,8 @@ export class CharacterAnimator {
   update(dt, state) {
     const { root, rig } = this.avatar, bones = rig.bones;
     const speed = Math.max(0, state.speed), moving = speed > .12;
-    const armed = state.weapon === 'sword' && state.action?.kind !== 'punch';
+    const armed = state.weapon !== 'unarmed' && Boolean(state.weapon) && state.action?.kind !== 'punch';
+    const bow=weaponAction(state.weapon).ranged;
     const alpha = 1 - Math.exp(-dt * 18);
     if(state.action!==this.lastAction){for(const name of ['upperArmR','forearmR'])this.entryBones[name]=bones[name].quaternion.clone();this.entryArm={...this.lastSwordArm};this.entryTurn=this.lastTurn;this.lastAction=state.action;}
     this.airWeight=damp(this.airWeight,state.airborne?1:0,18,dt);this.landing=Math.max(0,this.landing-dt*3.2);
@@ -75,10 +78,13 @@ export class CharacterAnimator {
     }
     if (state.action) {
       const { kind, progress: p, side, combo, height } = state.action;
-      if (kind === 'sword') {
+      if (kind === 'sword' && bow) {
+        const raised=smoothstep(p,0,.18)*(1-smoothstep(p,.85,1));
+        if(!moving)set('hips',0,-.18*raised);set('spine',0,-.23*raised);set('chest',0,-.95*raised);set('head',0,1.36*raised);
+      } else if (kind === 'sword') {
         let turn=sampleSwordCut(p,combo,height,state.action.power??0).turn;
         turn=lerp(this.entryTurn,turn,smoothstep(p,0,.27));this.lastTurn=turn;
-        set('hips',0,turn*.30);
+        if(!moving)set('hips',0,turn*.30);
         set('chest',.10*Math.sin(p*Math.PI),turn);
         set('spine',.035*Math.sin(p*Math.PI),turn*.35);
       } else {
@@ -98,10 +104,10 @@ export class CharacterAnimator {
       bone.quaternion.slerp(pose[name] ?? IDENTITY, alpha);
     }
     if(!state.action)this.lastTurn=damp(this.lastTurn,0,10,dt);
-    const combatWeight=state.action?Math.sin(Math.PI*state.action.progress):this.guardWeight;
+    const combatWeight=(state.action?Math.sin(Math.PI*state.action.progress):this.guardWeight)*(1-this.motion);
     bones.hips.position.y = this.baseHip + gait.pelvisY * this.motion + breath * .001 - combatWeight*.035 - Math.sin(Math.PI*(1-this.landing))*this.landingImpact*.075 - (state.takeoffWeight??0)*.055;
-    bones.hips.position.x = gait.pelvisX * this.motion + this.lastTurn*.025;
-    bones.hips.position.z = state.action?.kind==='sword'?.045*Math.sin(Math.PI*state.action.progress):0;
+    bones.hips.position.x = gait.pelvisX * this.motion + this.lastTurn*.025*(1-this.motion);
+    bones.hips.position.z = state.action?.kind==='sword'?.045*Math.sin(Math.PI*state.action.progress)*(1-this.motion):0;
     root.updateMatrixWorld(true);
     // Keep the supporting leg reachable without stretching. This is a contact
     // correction, not a permanent run crouch: flight uses the authored height.
@@ -181,12 +187,13 @@ export class CharacterAnimator {
       // weapon switches and interrupted recoveries; do not ease from an open hand.
       poseHand(rig,side,mode,mode==='grip'?1:alpha,run);
     }
-    if(armed&&!state.action)alignSwordReady(this.avatar,this.guardWeight);
-    if(state.action?.kind==='sword'){
+    if(armed&&!state.action&&!bow)alignSwordReady(this.avatar,this.guardWeight);
+    if(state.action?.kind==='sword'&&!bow){
       alignSwordAction(this.avatar,state.action);
       if(state.action.chained&&state.action.progress<.25)for(const name of ['upperArmR','forearmR'])bones[name].quaternion.copy(this.entryBones[name].clone().slerp(bones[name].quaternion,smoothstep(state.action.progress,0,.25)));
     }
 
+    if(armed)alignWeaponFamily(this.avatar,state);
     for(const side of ['L','R']) {
       alignElbowHinge(bones[`upperArm${side}`],bones[`forearm${side}`],bones[`hand${side}`]);
     }

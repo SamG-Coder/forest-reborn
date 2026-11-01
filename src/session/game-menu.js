@@ -43,14 +43,14 @@ export function createGameMenu({getCharacter, getSavedAt, onPause, onSave, onLog
     if (previousFocus?.isConnected) previousFocus.focus();
     return true;
   }
-  function save() {
-    try { onSave(); savedMessage(); status.textContent = 'Progress saved.'; return true; }
+  async function save() {
+    try { status.textContent='Saving progress…';await onSave(); savedMessage(); status.textContent = 'Progress saved.'; return true; }
     catch (error) { status.classList.add('error'); status.textContent = `Could not save: ${error.message}. You are still in the game.`; return false; }
   }
   trigger.onclick = open; resume.onclick = close;
   root.querySelector('#save-game').onclick = save;
-  root.querySelector('#log-off').onclick = () => {
-    if (leaving || !save()) return;
+  root.querySelector('#log-off').onclick = async () => {
+    if (leaving || !await save()) return;
     leaving = true;
     root.querySelector('#log-off').textContent = 'Returning to character selection…';
     for (const button of root.querySelectorAll('button')) button.disabled = true;
@@ -63,7 +63,7 @@ export function createGameMenu({getCharacter, getSavedAt, onPause, onSave, onLog
     if (event.code === 'Escape') { event.preventDefault(); close(); }
     else if (event.code === 'Tab') {
       event.preventDefault();
-      const buttons = [...root.querySelectorAll('button:not(:disabled)')];
+      const buttons = [...root.querySelectorAll('button:not(:disabled),summary,input:not(:disabled)')].filter(node=>node.getClientRects().length);
       const index = buttons.indexOf(document.activeElement);
       buttons[(index + (event.shiftKey ? -1 : 1) + buttons.length) % buttons.length]?.focus();
     }

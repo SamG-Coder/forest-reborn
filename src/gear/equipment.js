@@ -50,8 +50,8 @@ export class LayeredEquipment {
   update(dt){
     if(![...this.entries.values()].some(e=>e.patches.some(p=>p.enabled!==false)))return;
     this.avatar.root.updateMatrixWorld(true);this.avatar.rig.skeleton.update();
-    const capsules=avatarCapsules(this.avatar);
-    this.garmentCollider.update(this.entries.get('legs')?.meshes??[]);
+    const capsules=this.simulate?avatarCapsules(this.avatar):null;
+    if(this.simulate)this.garmentCollider.update(this.entries.get('legs')?.meshes??[]);
     for(const entry of this.entries.values())for(const patch of entry.patches){
       if(patch.enabled===false)continue;
       if(this.simulate)patch.update(dt,capsules,this.wind,p=>this.garmentCollider.project(p,patch.side));else{patch.reset();patch.update(0);}

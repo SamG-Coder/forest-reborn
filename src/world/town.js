@@ -34,7 +34,17 @@ export function createTown(scene,timber,surfaces,herbTexture,{plots=TOWN_PLOTS,n
     const key=kind+(roof?':'+activePlot.id:'');if(!batches.has(key))batches.set(key,[]);batches.get(key).push(geometry);
   }
   function box(kind,x,y,z,w,h,d,roof=false){add(new THREE.BoxGeometry(w,h,d),kind,[x,y,z],[0,0,0],roof);}
-  function solid(x,z,w,d){const points=[[-1,-1],[-1,1],[1,-1],[1,1]].map(([sx,sz])=>transformPoint(x+sx*w/2,z+sz*d/2));colliders.push({minX:Math.min(...points.map(p=>p[0])),maxX:Math.max(...points.map(p=>p[0])),minZ:Math.min(...points.map(p=>p[1])),maxZ:Math.max(...points.map(p=>p[1]))});}
+  function solid(x,z,w,d){
+    // Short wall sections preserve rotated door openings in the AABB nav grid.
+    // One box around a whole diagonal wall used to extend across the doorway.
+    const count=activePlot?.angle?Math.ceil(Math.max(w,d)/.75):1;
+    for(let i=0;i<count;i++){
+      const ww=w>=d?w/count:w,dd=d>w?d/count:d;
+      const xx=x+(w>=d?((i+.5)/count-.5)*w:0),zz=z+(d>w?((i+.5)/count-.5)*d:0);
+      const points=[[-1,-1],[-1,1],[1,-1],[1,1]].map(([sx,sz])=>transformPoint(xx+sx*ww/2,zz+sz*dd/2));
+      colliders.push({minX:Math.min(...points.map(p=>p[0])),maxX:Math.max(...points.map(p=>p[0])),minZ:Math.min(...points.map(p=>p[1])),maxZ:Math.max(...points.map(p=>p[1]))});
+    }
+  }
   function beam(a,b,width=.17,kind='dark',roof=false){
     const from=new THREE.Vector3(...a),to=new THREE.Vector3(...b),delta=to.clone().sub(from),g=new THREE.BoxGeometry(width,delta.length(),width);
     metricUV(g);g.applyQuaternion(new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,1,0),delta.normalize()));const middle=from.add(to).multiplyScalar(.5);g.translate(middle.x,middle.y+baseY,middle.z);
@@ -55,7 +65,7 @@ export function createTown(scene,timber,surfaces,herbTexture,{plots=TOWN_PLOTS,n
   }
   function house({id,x,z,w,d,h=3.6,tavern=false,workshop=false,name,lean=false}){
     baseY=terrainHeight(x,z);
-    const usable=tavern||workshop;
+    const usable=tavern||workshop||id.includes('home')||id.startsWith('cottage')||id==='watch';
     const front=z+d/2,back=z-d/2,door=2.4;
     box('stone',x,usable?-.12:.12,z,w+.4,.24,d+.4);
     if(workshop)box('wood',x,.006,z,w-.25,.01,d-.25);
@@ -64,7 +74,13 @@ export function createTown(scene,timber,surfaces,herbTexture,{plots=TOWN_PLOTS,n
     for(const side of [-1,1]){const bx=x+side*(w+door)/4,bw=(w-door)/2;box('plaster',bx,h/2,front,bw,h,.22);solid(bx,front,bw,.35);}
     box('plaster',x,h-.3,front,door,.6,.22);
     if(!usable){box('wood',x,1.35,front-.02,door,2.7,.12);solid(x,front,door,.2);box('plaster',x,(2.7+h)/2,front,door,h-2.7,.23);}
-    else{for(const side of [-1,1])box('dark',x+side*(door/2+.04),1.35,front,.12,2.7,.28);box('dark',x,2.72,front,door+.24,.14,.28);}
+    else{
+      // The opening ends at the same height as its frame. Previously the
+      // entire strip up to the eaves was missing above an enterable door.
+      box('plaster',x,(2.7+h)/2,front,door,h-2.7,.23);
+      for(const side of [-1,1])box('dark',x+side*(door/2+.04),1.35,front,.12,2.7,.28);
+      box('dark',x,2.72,front,door+.24,.14,.28);
+    }
     for(const xx of [x-w/2,x,x+w/2])for(const zz of [front+.14,back-.14]){
       if(xx!==x||zz===back-.14)box('dark',xx,h/2,zz,.19,h,.19);
     }
@@ -130,7 +146,7 @@ export function createTown(scene,timber,surfaces,herbTexture,{plots=TOWN_PLOTS,n
     }
     add(new THREE.CylinderGeometry(.07,.08,.16,8),'brass',[x+.35,.96,z]);add(new THREE.CylinderGeometry(.07,.08,.16,8),'brass',[x-.25,.96,z+.25]);
   }
-  const fire=new THREE.PointLight('#ffb15c',5,8,2);fire.position.set(-26,baseY+1.4,-23.8);root.add(fire);interiorLights.push(fire);
+  interiorLights.push({position:new THREE.Vector3(-26,baseY+1.4,-23.8),alwaysOn:true,power:5,range:8});
   // Market canopies, crates and a well make the square readable at player height.
   for(const [x,z] of [[11,2],[-10,3]]){
     baseY=terrainHeight(x,z);
@@ -157,7 +173,7 @@ export function createTown(scene,timber,surfaces,herbTexture,{plots=TOWN_PLOTS,n
   for(let i=0;i<7;i++){add(new THREE.CylinderGeometry(.13,.09,.2,8),'cloth',[-23+i*.33,.98,23]);add(new THREE.PlaneGeometry(.4,.45),'herb',[-23+i*.33,1.27,23]);}
   }
   for(const [key,parts] of batches){const [kind,plotId]=key.split(':'),g=mergeGeometries(parts);parts.forEach(p=>p.dispose());const mesh=new THREE.Mesh(g,materials[kind]);mesh.castShadow=true;mesh.receiveShadow=true;root.add(mesh);if(plotId)roofParts.push({mesh,plot:plots.find(p=>p.id===plotId)});}
-  return {root,colliders,
+  return {root,colliders,interiorLights,
     update(position){for(const {mesh,plot} of roofParts){const dx=position.x-plot.x,dz=position.z-plot.z,a=plot.angle??0,x=dx*Math.cos(a)-dz*Math.sin(a),z=dx*Math.sin(a)+dz*Math.cos(a);mesh.visible=!(Math.abs(x)<plot.w/2&&Math.abs(z)<plot.d/2);}},
     tavern:{minX:-27,maxX:-11,minZ:-25.5,maxZ:-12.5},
     dispose(){root.removeFromParent();root.traverse(node=>{if(node.isMesh){node.geometry.dispose();if(!Object.values(materials).includes(node.material)){node.material.map?.dispose();node.material.dispose();}}});for(const material of new Set(Object.values(materials)))if(!Object.values(surfaces).includes(material))material.dispose();},

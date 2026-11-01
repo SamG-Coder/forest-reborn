@@ -1,0 +1,13 @@
+{
+  "generator": "Built-in image_gen",
+  "assets": [
+    {
+      "path": "public/assets/world/flax.png",
+      "prompt": "Use case: stylized-concept. Asset type: transparent vegetation cutout for a cel-shaded anime fantasy 3D game. A single healthy cluster of flax growing upright, fine olive-green stems, narrow pointed leaves, fifteen small five-petal sky-blue flowers with pale yellow centers and a few green seed pods. Whole plant visible including stem bases on one baseline, 80 percent of a square canvas, evenly distributed natural branching, no soil, no pot, no ground shadow, no background, no text. Crisp hand-painted anime environmental art, believable botany, subtle two-tone shading, readable silhouette, neutral soft lighting. Actual transparent alpha around and between leaves and stems."
+    },
+    {
+      "path": "public/assets/ui/archery-items.png",
+      "prompt": "Use case: stylized-concept. Asset type: inventory icon atlas for an anime fantasy MMO. Square image exactly 3 columns by 3 rows, nine equally spaced isolated objects, each centered within its own equal square cell with generous transparent margins. Row 1: a beautiful curved wooden ash shortbow with cream linen string; a long recurved dark wood warbow with leather grip and linen string; a bundle of slender wooden arrows with sharpened wood tips and white feather flights. Row 2: a bundle of arrows with broad triangular iron tips; a bundle of arrows with narrow steel bodkin tips; a tied bunch of flax with small blue flowers. Row 3: a coil of pale golden linen bowstring; three white and brown flight feathers; a small bundle of straight wooden arrow shafts. Crisp premium hand-painted anime RPG item icons, warm wood, polished metal, controlled highlights, strong clear silhouettes, consistent top left soft light. Actual transparent background. NO text, no labels, no borders, no grid lines, no checkerboard."
+    }
+  ]
+}

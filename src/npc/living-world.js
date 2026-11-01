@@ -1,8 +1,16 @@
+import {PEDESTRIAN_SPEED} from '../game/locomotion-speed.js';
+import {recordHitImpact} from '../game/hit-impact.js';
+import {guardLines} from '../audio/dialogue-lines.js';
+import {weaponAction,isWeapon} from '../game/weapon-catalog.js';
+import {createArrowShot,arrowHits,selectedArrow,spendArrow} from '../game/archery.js';
+import {characterStats} from '../progression/character-stats.js';
+import {createGearRegistry} from '../gear/catalog.js';
+import {resolveStrike} from '../game/combat-rules.js';
 import {Vector3} from 'three';
 import {inTown,terrainHeight} from '../world/terrain.js';
 import {flagState,updatePvpFlag,requestPvpFlag,shouldFlee,recordPlayerKill} from './society.js';
 import {TownLaw,nearestTownExit} from './town-law.js';
-import {SWORD_CUT_COUNT,SWORD_DURATION,SWORD_IMPACT} from '../game/sword-motion.js';
+import {SWORD_CUT_COUNT} from '../game/sword-motion.js';
 import {inAttackRange} from '../game/targeting.js';
 import {CombatApproach} from './combat-approach.js';
 import {facePoint,chooseCombatTarget} from './motion.js';
@@ -16,7 +24,8 @@ export const RESIDENT_RESPAWN_MS=45000;
 export class LivingWorld {
   constructor(residents,monsters,simulation,navigation,move){
     Object.assign(this,{residents,monsters,simulation,navigation,move});this.player=null;this.now=Date.now();
-    this.damageEvents=[];this.speechEvents=[];this.recordDamage=true;
+    this.gearRegistry=createGearRegistry();this.damageEvents=[];this.speechEvents=[];this.recordDamage=true;
+    this.shots=[];this.projectileEvents=[];
     this.law=new TownLaw((text,now,speech)=>{simulation.society.announce(text,now);if(speech)this.guardSays(this.residents.find(p=>p.id===speech.guardId),speech.text,now,speech.subjectId);});
     for(const person of residents){
       person.maxHp=person.type==='guard'?160:100;person.health=person.maxHp;person.pvp=flagState();
@@ -24,18 +33,20 @@ export class LivingWorld {
       Object.defineProperties(target,{hp:{get:()=>person.data?.health??person.health,set:value=>{if(person.data)person.data.health=value;else person.health=value;}},maxHp:{get:()=>person.maxHp},pvp:{get:()=>person.data?.pvp??person.pvp},level:{get:()=>person.data?simulation.level(person.data):person.type==='guard'?5:1}});
       person.target=target;
     }
-    this.units=()=>[...this.residents.filter(p=>!p.dormant&&!p.cinematic).map(p=>p.target),...this.monsters.filter(t=>!t.dormant),...(this.player?.isActive()?[this.player.target]:[])];
+    this.units=()=>[...this.residents.filter(p=>!p.dormant&&!p.cinematic&&!p.target.externalSimulation).map(p=>p.target),...this.monsters.filter(t=>!t.dormant&&!t.externalSimulation),...(this.player?.isActive()?[this.player.target]:[])];
     this.approach=new CombatApproach(navigation,this.units);
   }
   bindPlayer({player,combat,progress,isActive,name}){
     progress.data.pvp=flagState(progress.data.pvp);
     const target={id:'player',name,position:player.position,kind:'player',maxHp:100,height:1.3};
     Object.defineProperties(target,{hp:{get:()=>combat.hp,set:v=>combat.hp=v},pvp:{get:()=>progress.data.pvp}});
-    target.receive=(damage,attacker)=>player.dodge>0?0:combat.receive(damage,attacker.position,player);
+    target.receive=(damage,attacker,penetration=0)=>player.dodge>0?0:combat.receive(damage,attacker.position,player,penetration);
     this.player={target,progress,isActive};
   }
   guild(unit){return this.simulation.society.guildFor(unit.id==='player'?'player':unit.person?.data?.id)?.id;}
   canPlayerAttack(target){
+    if(target?.battleLocked)return false;
+    if(target?.externalSimulation)return target.hp>0&&(target.hostile||this.player?.target.pvp.enabled);
     if(!target?.person)return true;
     const player=this.player?.target;if(!player||player.hp<=0||target.hp<=0)return false;
     if(target.person.type==='adventurer')return target.pvp.enabled&&(!this.guild(player)||this.guild(player)!==this.guild(target));
@@ -49,9 +60,10 @@ export class LivingWorld {
     this.speechEvents.push({person,text,now,subjectId});if(this.speechEvents.length>16)this.speechEvents.shift();
   }
   aggression(attacker,target,now=this.now){
+    if(target.externalSimulation){target.revengeTarget=attacker.id;target.revengeUntil=target.simulation.time+15;target.opponent=attacker.id;target.decideAt=target.simulation.time+1;return;}
     const adventurer=(attacker.id==='player'||attacker.person?.type==='adventurer')&&(target.person||target.id==='player');
     if(attacker.pvp&&adventurer){attacker.pvp.enabled=true;attacker.pvp.clearAt=0;attacker.pvp.combatUntil=now+30000;}
-    if(target.person){if(isGuard(target.person)&&target.person.threat!==attacker)this.guardSays(target.person,'Back off. Put that weapon away!',now,attacker.id);target.person.threat=attacker;target.person.threatUntil=now+20000;}
+    if(target.person){if(isGuard(target.person)&&target.person.threat!==attacker){const p=target.person;p.attackBark=(p.attackBark??-1)+1;this.guardSays(p,guardLines.attacked[p.attackBark%guardLines.attacked.length],now,attacker.id);}target.person.threat=attacker;target.person.threatUntil=now+20000;}
     if(target.person&&target.person.type!=='adventurer'&&attacker.pvp&&adventurer)attacker.pvp.wantedUntil=now+60000;
     if(target.pvp?.enabled){target.pvp.clearAt=0;target.pvp.combatUntil=now+30000;}
   }
@@ -62,14 +74,30 @@ export class LivingWorld {
     if(this.damageEvents.length>=128)this.damageEvents.shift();
     this.damageEvents.push({target:{id:target.id,position:target.position.clone(),height:target.height},amount});
   }
-  damage(attacker,target,amount,now){
-    if(target.hp<=0)return;
+  combatSpec(person){
+    const weapon=person.data?.weapon??person.weapon??'sword';
+    const data={level:person.data?this.simulation.level(person.data):5,weapon,equipped:person.data?.questProgress?.equipped??[...person.actor?.wardrobe?.entries?.values?.()??[]].map(e=>e.definition.id),skills:person.data?.skills};
+    return {weapon,action:weaponAction(weapon),stats:characterStats(data,this.gearRegistry)};
+  }
+  damage(attacker,target,amount,now,penetration=0){
+    if(target.hp<=0||target.battleLocked)return;
     const before=target.hp;
-    if(target.receive)target.receive(amount,attacker);else target.hp=Math.max(0,target.hp-amount);
+    const defender=target.stats??(target.person?this.combatSpec(target.person).stats:null);
+    if(defender&&!target.receive){
+      const hit=resolveStrike({damage:amount,defender,facing:0,stamina:target.person?.data?.stamina??100,random:Math.random,penetration});
+      amount=hit.blocked?0:hit.damage;
+    }
+    if(target.receive)target.receive(amount,attacker,penetration);else target.hp=Math.max(0,target.hp-amount);
+    if(target.hp<before){target.recentAttacker=attacker;target.recentAttackUntil=now+12000;
+      const source={...attacker,weapon:attacker.person?.data?.weapon??attacker.person?.weapon??attacker.weapon??(attacker.kind==='bandit'?'sword':'unarmed'),strikes:attacker.person?.strikes??attacker.strikes};
+      recordHitImpact(target,source,before-target.hp);this.blood?.hit(target,source,before-target.hp,this.player?.target.position);this.townLife?.recordHit(target,attacker,before-target.hp);
+    }
     // Player damage is already reported by CombatController, including blocks.
     if(!target.receive)this.reportDamage(target,before);
     if(before>target.hp&&attacker.person?.data){
-      this.simulation.landedHit(attacker.person.data);
+      this.simulation.landedHit(attacker.person.data,target);
+      this.simulation.society.recordBountyHit(attacker.person.data.id,target);
+      this.simulation.factions?.harm(target,{id:attacker.id,factionId:attacker.person.factionId,level:this.simulation.level(attacker.person.data)},now);
       this.simulation.record(attacker.person.data,'fight',`hit ${target.name}`,now);
     }
     target.flash=.16;
@@ -77,30 +105,34 @@ export class LivingWorld {
     if(target.pvp?.enabled)target.pvp.combatUntil=now+30000;
     if(attacker.pvp?.enabled)attacker.pvp.combatUntil=now+30000;
     if(target.hp<=0&&(target.id==='player'||target.person?.type==='adventurer')&&attacker.person?.type==='adventurer')recordPlayerKill(attacker.pvp,now);
+    if(target.hp<=0&&attacker.person?.data)this.simulation.defeated(attacker.person.data,target,now);
+    if(target.hp<=0&&target.id==='player')return;
+    if(target.hp<=0&&(target.externalSimulation||!target.person)){this.defeatTarget?.(target,now,attacker);return;}
     if(target.hp<=0&&target.person){
-      this.defeat(target.person,now);this.simulation.society.contribute(attacker.id==='player'?'player':attacker.person?.data?.id,'pvp',target.position,now);
+      this.defeat(target.person,now,attacker);this.simulation.society.contribute(attacker.id==='player'?'player':attacker.person?.data?.id,'pvp',target.position,now);
       this.simulation.society.announce(`${attacker.name} defeated ${target.name}.`,now);
     }
   }
-  defeat(person,now=this.now){
-    person.target.hp=0;person.respawnAt=now+RESIDENT_RESPAWN_MS;person.actor.root.visible=false;person.attack=null;person.threat=null;person.skillAction?.cancel();person.pathGoal=null;
+  defeat(person,now=this.now,killer=null){
+    person.target.hp=0;person.respawnAt=now+RESIDENT_RESPAWN_MS;this.corpses?.kill(person.target,now,killer);person.attack=null;person.threat=null;person.skillAction?.cancel();person.pathGoal=null;
   }
   fleeGoal(person,threat){
     const dx=person.position.x-threat.position.x,dz=person.position.z-threat.position.z,angle=Math.atan2(dx,dz);
     const candidates=[0,.7,-.7,1.4,-1.4,Math.PI].map(turn=>({x:Math.max(-140,Math.min(140,person.position.x+Math.sin(angle+turn)*15)),z:Math.max(-140,Math.min(140,person.position.z+Math.cos(angle+turn)*15))}));
-    return candidates.find(p=>this.navigation.walkable(p.x,p.z)&&this.navigation.route(person.position,p).length)??nearestTownExit(person.position);
+    return candidates.find(p=>this.navigation.walkable(p.x,p.z))??nearestTownExit(person.position);
   }
   prepare(dt,now){
     this.now=now;
+    this.shots=this.shots.filter(({shot,source,target})=>{if(now/1000<shot.end)return true;if(arrowHits(shot,target)&&this.navigation.segmentClear(source.position,target.position,shot.volley))this.damage(source,target,shot.damage,now,shot.penetration);return false;});
     this.approach.update(now);
     for(const person of this.residents){
       if(person.cinematic||person.dormant||person.externalSchedule)continue;
       if(person.target.hp<=0){
         person.respawnAt??=now+RESIDENT_RESPAWN_MS;
         if(now>=person.respawnAt){
-          person.target.hp=person.maxHp;person.respawnAt=0;person.threat=null;person.attack=null;person.intent=null;person.pathGoal=null;person.townExit=null;
+          this.corpses?.restore(person.target);this.blood?.clear(person.target);person.sleeping=false;person.actor.root.rotation.x=0;person.target.hp=person.maxHp;person.respawnAt=0;person.threat=null;person.attack=null;person.intent=null;person.pathGoal=null;person.townExit=null;
           person.guardAnchor=null;person.returnPost=null;person.combatTarget=null;person.lawTargetId=null;
-          const home=person.data?{x:2+(person.data.id%3),z:55}:person.home;person.position.set(home.x,terrainHeight(home.x,home.z),home.z);
+          const home=person.data?.homeTown==='highmere'?person.home:person.data?{x:2+(person.data.id%3),z:55}:person.home;person.position.set(home.x,terrainHeight(home.x,home.z),home.z);
           const skullUntil=person.target.pvp.skullUntil;Object.assign(person.target.pvp,flagState(),{skullUntil});if(person.data){person.data.task='rest';person.data.stamina=60;}
         }
       }
@@ -116,6 +148,15 @@ export class LivingWorld {
     for(const person of this.residents){
       if(person.cinematic||person.dormant||person.externalSchedule||person.companion)continue;
       const unit=person.target;if(unit.hp<=0)continue;
+      if(person.deployment){
+        const deployment=person.deployment,near=deployment.units.filter(t=>t.hp>0&&t.team!==deployment.team&&distance(unit,t)<22);
+        const enemy=person.threat?.hp>0?person.threat:chooseCombatTarget(person,near,now);
+        if(enemy){person.intent={type:'fight',target:enemy};continue;}
+        if(!deployment.simulation.winner){
+          const company=deployment.simulation.companies.find(c=>c.team===deployment.team&&c.alive>0);
+          person.intent={type:'rally',goal:{x:deployment.site.x+(company?.cx??-25),z:deployment.site.z+(company?.cz??0)},label:'Joining the defence'};continue;
+        }
+      }
       if(isGuard(person)){
         if(person.returnPost){
           if(person.threat&&canGuardPursue(person,person.threat,{retaliating:true})){person.returnPost=null;person.guardAnchor=person.position.clone();}
@@ -179,30 +220,37 @@ export class LivingWorld {
     const intent=person.intent;if(!intent)return null;
     person.skillAction?.cancel();let speed=0,action=null,armed=false;
     if(intent.type==='fight'){
-      const target=intent.target;armed=true;person.activity='Fighting '+target.name;
+      const target=intent.target,{weapon,action:spec,stats}=this.combatSpec(person);armed=isWeapon(weapon);person.activity='Fighting '+target.name;
       if(target.hp>0){
-        const reach=2.4,goal=this.approach.goal(person.target,target,reach,now);
-        const inRange=inAttackRange(person.position,target,reach)&&this.navigation.segmentClear(person.position,target.position);
-        if(!person.attack&&(!inRange||this.approach.crowded(person.target)))speed=this.move(person,goal,dt,inRange?1.1:3.2);
+        const reach=stats.range,goal=this.approach.goal(person.target,target,reach,now);
+        const clear=this.navigation.segmentClear(person.position,target.position),volley=Boolean(person.archer&&!clear&&this.navigation.segmentClear(person.position,target.position,true));
+        const inRange=inAttackRange(person.position,target,reach)&&(clear||volley);
+        const crowded=!spec.ranged&&this.approach.crowded(person.target),journal=this.simulation.questAgents?.get(person.data?.id),ammo=journal?.progress.data??person.data?.questProgress??(person.ammo??={ammunition:{'arrow.wood':60}});
+        if(!inRange||crowded)speed=this.move(person,goal,dt,inRange?1.1:PEDESTRIAN_SPEED.run);
+        if(spec.ranged&&distance(person.target,target)<5){const dx=person.position.x-target.position.x,dz=person.position.z-target.position.z,d=Math.hypot(dx,dz)||1;speed=this.move(person,new Vector3(person.position.x+dx/d*8,person.position.y,person.position.z+dz/d*8),dt,2.5);}
         facePoint(person,target.position);
-        if(inRange&&!this.approach.crowded(person.target)){
-          if(!person.attack&&now>=(person.nextStrikeAt??0)){person.attack={kind:'sword',style:'cut',side:'R',combo:(person.strikes??0)%SWORD_CUT_COUNT,elapsed:0,progress:0,height:target.height,hit:false,target};person.strikes=(person.strikes??0)+1;person.nextStrikeAt=now+1400;}
+        if(inRange&&!crowded&&(!spec.ranged||selectedArrow(ammo))){
+          if(!person.attack&&now>=(person.nextStrikeAt??0)){person.attack={kind:spec.kind,weapon,style:spec.animation??'cut',side:'R',combo:(person.strikes??0)%SWORD_CUT_COUNT,elapsed:0,progress:0,height:target.height,hit:false,target};person.strikes=(person.strikes??0)+1;person.nextStrikeAt=now+spec.interval*1000;}
         }
         if(person.attack?.target!==target)person.attack=null;
-        if(person.attack){action=person.attack;action.elapsed+=dt;action.progress=Math.min(1,action.elapsed/SWORD_DURATION);
-          if(action.progress>=SWORD_IMPACT&&!action.hit){
+        if(person.attack){action=person.attack;action.elapsed+=dt;action.progress=Math.min(1,action.elapsed/spec.duration);
+          if(action.progress>=spec.hit&&!action.hit){
             action.hit=true;
-            if(inAttackRange(person.position,target,reach)&&this.navigation.segmentClear(person.position,target.position)){this.aggression(person.target,target,now);this.damage(person.target,target,person.type==='guard'?11:8,now);}
+            if(inAttackRange(person.position,target,reach)&&(clear||volley)){
+              this.aggression(person.target,target,now);
+              if(spec.ranged){const arrow=spendArrow(ammo);if(arrow){journal?.syncOut();const shot=createArrowShot(person.target,target,{time:now/1000,speed:spec.projectileSpeed,damage:stats.damage,arrow});if(volley){shot.volley=true;shot.arc=13;shot.end+=.7;}this.shots.push({shot,source:person.target,target});if(this.projectileEvents.length<256)this.projectileEvents.push(shot);}}
+              else this.damage(person.target,target,stats.damage,now);
+            }
           }
           if(action.progress>=1)person.attack=null;
         }
       }
     }else{
       person.attack=null;person.activity=intent.label;
-      if(Math.hypot(person.position.x-intent.goal.x,person.position.z-intent.goal.z)>(intent.type==='return'?.65:1))speed=this.move(person,targetPosition(intent.goal),dt,intent.type==='return'?1.6:intent.type==='rally'?2.8:3.6);
+      if(Math.hypot(person.position.x-intent.goal.x,person.position.z-intent.goal.z)>(intent.type==='return'?.65:1))speed=this.move(person,targetPosition(intent.goal),dt,intent.type==='return'?1.6:intent.type==='rally'?2.8:PEDESTRIAN_SPEED.run);
       if(intent.type==='flee'&&person.threat&&distance(person.target,person.threat)>15){person.threat=null;person.threatUntil=0;}
     }
     if(person.data)person.data.activity=person.activity;
-    return {speed,action,armed,activity:'rest',seated:false};
+    return {speed,action,armed,weaponId:person.data?.weapon??person.weapon??'sword',activity:'rest',seated:false};
   }
 }

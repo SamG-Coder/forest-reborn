@@ -8,7 +8,8 @@ export function renderShop({body,person,progress,simulation,mode,canTrade,onTrad
   const grid=element(body,'div','shop-grid');
   function render(){
     grid.replaceChildren();
-    const entries=mode==='buy'?SHOP_OFFERS[person.id].map(offer=>({item:progress.item(offer[0]),price:offer[1],count:shopStock(simulation.shopStock,person.id,offer)})):progress.data.bag.flatMap((stack,index)=>stack?[{item:progress.item(stack.id),price:progress.item(stack.id).value*stack.count,count:stack.count,index}]:[]);
+    const economy=progress.factions?.economy;
+    const entries=mode==='buy'?SHOP_OFFERS[person.id].map(offer=>({item:progress.item(offer[0]),price:economy?.quote(person.id,offer[0],offer[1])??offer[1],count:shopStock(simulation.shopStock,person.id,offer,economy)})):progress.data.bag.flatMap((stack,index)=>stack?[{item:progress.item(stack.id),price:progress.item(stack.id).value>0?(economy?.quote(person.id,stack.id,progress.item(stack.id).value,'sell')??progress.item(stack.id).value)*stack.count:0,count:stack.count,index}]:[]);
     for(const entry of entries.filter(e=>e.item.name.toLowerCase().includes(search.value.toLowerCase()))){
       const {item,price,count,index}=entry,card=element(grid,'article','shop-card'),head=element(card,'div','item-card-heading');itemImage(head,item);
       const title=element(head);element(title,'small','eyebrow',item.type);element(title,'h3','',item.name);
@@ -16,7 +17,7 @@ export function renderShop({body,person,progress,simulation,mode,canTrade,onTrad
       const button=action(footer,mode==='buy'?'Buy':'Sell stack',()=>{
         if(!canTrade()){message('Move closer to trade.',3);return;}
         if(mode==='buy'){if(buyItem(progress,simulation.shopStock,person.id,item.id)){onTrade?.();message(item.name+' added to your bag.',3);}else message(progress.lastError,3);}
-        else{const coins=sellStack(progress,index,simulation.stock);onTrade?.();message('Sold for '+formatMoney(coins),3);}
+        else{const coins=sellStack(progress,index,simulation.stock,person.id);onTrade?.();message(coins?'Sold for '+formatMoney(coins):progress.lastError||'They cannot buy that.',3);}
         simulation.save();refresh();
       });
       button.setAttribute('aria-label',(mode==='buy'?'Buy ':'Sell ')+item.name);button.dataset.tooltip=`${item.name}\n${item.description}\n${mode==='buy'?'Price':'Stack value'}: ${formatMoney(price)}`;

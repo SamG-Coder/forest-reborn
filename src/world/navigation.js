@@ -16,9 +16,14 @@ class MinHeap {
 }
 /** Weighted A*: doors and furniture block movement; roads cost less than lawns. */
 export class TownNavigation {
-  constructor(obstacles,extent=150){
+  constructor(obstacles,extent=150,{deferGrid=false}={}){
     this.obstacles=obstacles;
-    this.extent=extent;this.width=extent*2+1;this.blocked=new Uint8Array(this.width*this.width);
+    this.extent=extent;this.width=extent*2+1;
+    if(!deferGrid)this.buildGrid();
+  }
+  buildGrid(){
+    if(this.blocked)return;
+    const {obstacles,extent}=this;this.blocked=new Uint8Array(this.width*this.width);
     this.edges=new Uint8Array(this.blocked.length);
     for(const box of obstacles)for(let z=Math.ceil(box.minZ-.3);z<=Math.floor(box.maxZ+.3);z++)for(let x=Math.ceil(box.minX-.3);x<=Math.floor(box.maxX+.3);x++){
       if(Math.abs(x)<=extent&&Math.abs(z)<=extent)this.blocked[this.index(x,z)]=1;
@@ -34,7 +39,7 @@ export class TownNavigation {
   index(x,z){return (z+this.extent)*this.width+x+this.extent;}
   point(index){return {x:index%this.width-this.extent,z:Math.floor(index/this.width)-this.extent};}
   walkable(x,z,radius=.26){return !this.obstacles.some(b=>x>b.minX-radius&&x<b.maxX+radius&&z>b.minZ-radius&&z<b.maxZ+radius);}
-  segmentClear(a,b){return !this.obstacles.some(box=>intersects(a.x,a.z,b.x,b.z,box,.28));}
+  segmentClear(a,b,ignoreGates=false){return !this.obstacles.some(box=>!(ignoreGates&&box.gateId)&&intersects(a.x,a.z,b.x,b.z,box,.28));}
   anchor(point){
     const x=Math.round(point.x),z=Math.round(point.z),candidates=[];
     for(let dz=-2;dz<=2;dz++)for(let dx=-2;dx<=2;dx++){
@@ -44,6 +49,7 @@ export class TownNavigation {
     return candidates.sort((a,b)=>Math.hypot(a.x-point.x,a.z-point.z)-Math.hypot(b.x-point.x,b.z-point.z))[0];
   }
   route(start,goal){
+    this.buildGrid();
     const first=this.anchor(start),last=this.anchor(goal);if(!first||!last)return [];
     const from=this.index(first.x,first.z),to=this.index(last.x,last.z);
     if(this.blocked[to])return [];

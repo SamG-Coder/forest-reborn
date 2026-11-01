@@ -50,8 +50,8 @@ export async function createHumanoid(template,registry,gearMaterials,{kind='huma
   const animator=new CharacterAnimator(avatar),weapon=equipPracticeSword(avatar),jobs=new JobAnimation(avatar);
   animator.update(1,{speed:0,weapon:'unarmed',grounding:false});weapon.sword.visible=false;
   for(const mesh of [body,underwear]){mesh.castShadow=true;mesh.receiveShadow=true;}
-  return {avatar,wardrobe,animator,weapon,root,update(dt,{speed=0,armed=false,seated=false,action=null,activity='rest',travelAngle=0}={}){
-    animator.update(dt,{speed,weapon:armed?'sword':'unarmed',grounding:false,action,travelAngle});weapon.sword.visible=armed;
+  return {avatar,wardrobe,animator,weapon,jobs,root,update(dt,{speed=0,weaponId='sword',armed=false,seated=false,action=null,activity='rest',travelAngle=0}={}){
+    if(armed)weapon.setWeapon(weaponId);animator.update(dt,{speed,weapon:armed?weaponId:'unarmed',grounding:false,action,travelAngle});weapon.sword.visible=armed;
     if(seated){rig.bones.thighL.rotation.x=-1.35;rig.bones.thighR.rotation.x=-1.35;rig.bones.shinL.rotation.x=1.35;rig.bones.shinR.rotation.x=1.35;}
     if(kind==='goblin')rig.bones.chest.rotation.x+=.035;
     if(action)jobs.clear();else jobs.update(dt,activity,speed>.05);

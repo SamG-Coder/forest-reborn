@@ -1,3 +1,5 @@
+import {extraDialogue,smallTalk} from './dialogue-lines.js';
+import {QUESTS} from '../progression/quests.js';
 /** Dialogue is selected from current world state, not a permanently cached greeting. */
 const pools={
   innkeeper:['There is bread left, if you have not eaten.','You can leave your pack by the bench.','Morning. What can I do for you?'],
@@ -32,24 +34,40 @@ const pools={
 };
 const arrival=['Sit down a moment. You were in a bad way when we found you.','Start with something simple. There is work here if you need it.','You said you cannot remember the road here. Anything come back to you?'];
 const letter=['You have Alden’s letter. Come in. Tell me what happened.','Alden told me to expect you. What do you remember of that other place?','The traveller from Mosswake. I have been waiting to hear your account.'];
-export function dialoguePool(person,progress){
+for(const [key,lines] of Object.entries(extraDialogue))pools[key]=[...(pools[key]??[]),...lines];
+function hash(text){let h=2166136261;for(const ch of String(text))h=Math.imul(h^ch.charCodeAt(0),16777619)>>>0;return h;}
+export function dialoguePool(person,progress,{population,channel}={}){
+  if(person.intent?.type==='flee')return {key:'flee',lines:pools.flee};
+  if(person.intent?.type==='fight'||person.attack)return {key:'fighting',lines:pools.fighting};
+  if(person.target?.hp>0&&person.target.hp<person.target.maxHp*.35)return {key:'injured',lines:pools.injured};
+  if(progress.data.realm?.defences?.towns?.[person.townId]?.helpedByPlayer&&person.type!=='adventurer')return {key:'town-defence-thanks',lines:['I saw you out there when the alarm rang. Thank you.','You helped hold the road. People remember that here.','We got everyone inside, thanks to you and the watch.']};
   if(person.id==='innkeeper'&&!progress.data.quests.errand?.completed)return {key:'arrival',lines:arrival};
   if(person.id==='highmere-lord'&&progress.data.quests['north-road']?.active)return {key:'letter',lines:letter};
+  if(channel==='chat'){
+    const role=person.data?.personality?.role??'explorer',trust=population?.simulation.society.relationships.trust('player',person.data?.id)??0;
+    return {key:'chat:'+role+':'+(trust>=26),lines:[...(smallTalk[role]??smallTalk.explorer),...(trust>=26?pools.trusted:[])]};
+  }
+  const quest=QUESTS.find(q=>q.id===person.data?.journey?.quest),journal=person.questJourney?.progress;
+  if(quest&&journal?.state(quest)==='ready'){
+    const contact=population?.residents.find(p=>p.id===(quest.returnTo??quest.giver));
+    if(contact)return {key:'turn-in:'+quest.id,lines:[`All done. I just need to find ${contact.name}.`,`I'm on my way back to ${contact.name}. It'll be good to get this finished.`,`That job's done. ${contact.name} is waiting for me.`]};
+  }
   const task=person.companion?'companion':person.type==='adventurer'?(person.data?.task??'rest'):person.id;
   const key=pools[task]?task:pools[person.type]?person.type:'generic';return {key,lines:pools[key]};
 }
 
 export class DialogueDirector {
-  constructor(progress){this.progress=progress;this.speakers=new Map();this.lines=new Map();this.nextAmbient=0;}
+  constructor(progress,population){this.progress=progress;this.population=population;this.speakers=new Map();this.lines=new Map();this.heard=new Map();this.nextAmbient=0;}
   select(person,{channel='greeting',now=Date.now()}={}){
-    const {key,lines}=dialoguePool(person,this.progress),id=person.id,state=this.speakers.get(id)??{index:-1,next:0,key:null,text:null};
+    const {key,lines}=dialoguePool(person,this.progress,{population:this.population,channel}),id=person.id,state=this.speakers.get(id)??{index:hash(id)%lines.length-1,next:0,key:null,text:null};
     const wait=now<state.next||(channel==='ambient'&&now<this.nextAmbient);
     if(wait&&state.key===key)return channel==='ambient'?null:{text:state.text,speak:false};
     if(channel==='ambient'&&wait)return null;
     let selected=-1;
-    for(let i=1;i<=lines.length;i++){const at=(state.index+i)%lines.length;if((this.lines.get(id+'|'+lines[at])??0)<=now){selected=at;break;}}
+    for(let i=1;i<=lines.length;i++){const at=(state.index+i)%lines.length;if(lines[at]!==state.text&&(this.lines.get(id+'|'+lines[at])??0)<=now&&(this.heard.get(lines[at])??0)<=now){selected=at;break;}}
     if(selected<0)return channel==='ambient'?null:{text:state.key===key?state.text:lines[0],speak:false};
-    const text=lines[selected];this.lines.set(id+'|'+text,now+180000);
+    const text=lines[selected];this.lines.set(id+'|'+text,now+180000);this.heard.set(text,now+45000);
+    if(this.lines.size>2048)for(const [line,until] of this.lines)if(until<now)this.lines.delete(line);
     this.speakers.set(id,{index:selected,key,text,next:now+(channel==='ambient'?90000:12000)});
     if(channel==='ambient')this.nextAmbient=now+24000;
     return {text,speak:true};

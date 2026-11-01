@@ -18,7 +18,7 @@ export function createSocietyPanel({simulation,population,progress,player,messag
     content.replaceChildren();renderGuildContent({content,section,setSection:id=>{section=id;render();},simulation,progress,message,save});
   }
   function show(){focusPanel(close);panel.hidden=false;section=society.guildFor('player')?'bounties':'guilds';render();}
-  const open=button(document.querySelector('#hotbar'),'Guilds',show);open.className='utility-action';open.dataset.tooltip='Guilds & world events · G\nForm or join a guild, invite adventurers and follow events.';
+  const open=button(document.querySelector('#hotbar'),'Guilds',()=>panel.hidden?show():close());open.className='utility-action';open.dataset.tooltip='Guilds & world events · G\nForm or join a guild, invite adventurers and follow events.';
   window.addEventListener('keydown',event=>{if(event.code==='KeyG'&&!event.repeat&&!/INPUT|SELECT|TEXTAREA/.test(event.target.tagName)&&!hud.hidden){if(panel.hidden)show();else close();}});
   const pvp=button(document.querySelector('.top-actions'),'PvP: Off',()=>{message(requestPvpFlag(progress.data.pvp,!progress.data.pvp.enabled,player.position,Date.now()),5);progress.save();});
   pvp.id='pvp-toggle';pvp.dataset.tooltip='PvP flag\nFlag to fight other flagged adventurers or attack NPCs. Town guards give ten seconds to leave. Lowering the flag takes thirty seconds outside town and out of combat.';

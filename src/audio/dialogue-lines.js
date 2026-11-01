@@ -1,0 +1,50 @@
+/** Short, authored lines. Facts about quests, stock and trust come from live state. */
+export const extraDialogue={
+  innkeeper:["Shut the door behind you. I'm losing all the heat.","There's a clean bowl on the shelf. Help yourself to water.","You look like you've been on your feet all day.","If it's work you need, I can probably find you some."],
+  trader:["Let me finish counting this. Right. What have you got?","I'll buy useful things. Broken things, less so.","Take your time. Just leave the seals on the jars.","That bag looks heavy. Shall we lighten it?"],
+  smith:["Don't lean on that. It's still hot.","A loose grip's one thing. A loose hilt will get you killed.","Bring it back if it starts rattling. Before it falls apart, preferably.","You're welcome to watch. Stand on that side."],
+  herbalist:["Take a smell before you buy it. You should know what you're using.","I label the jars for a reason.","If you found it by the road, wash it first.","Set the roots down here. Gently, please."],
+  stablemaster:["Keep your hand flat. She'll take the apple, not your fingers.","A horse isn't a cart. Give it a breather now and then.","Let me check those straps before you go.","They're quieter if you talk to them."],
+  captain:["A place and a head count. That's what I need in a report.","Got a problem? Tell me before it turns into a bigger one.","Watch the road behind you as well as the one ahead.","If you're heading out alone, tell someone where."],
+  guard:["Keep that blade sheathed in town.","If you've lost someone, start at the market.","Just passing through? All right.","Mind the carts. They can't stop as quickly as you can.","Let me know if you see trouble on the road.","We can talk. Just don't block the gate."],
+  vendor:["Those on the left are ripe. I'd eat them today.","Bring the basket back when you're done with it.","Have a look underneath as well. No use buying bruised fruit.","I can wrap that for the road."],
+  courier:["Is that for me? Let me see the name.","One moment. I'm trying to remember which door.","I don't suppose you've seen the person this is addressed to?","If it's fragile, tell me now."],
+  patron:["Pull up a chair. Nobody's using it.","My boots are drying. I'll be here a while.","You look like you have a story. Good one or bad one?","I came in for a drink. Somehow it's turned into lunch."],
+  'highmere-lord':["I've heard the reports. I'd rather hear it from someone who was there.","Leave the ceremony for later. Is anyone hurt?","What do you need from me?","If we're to ask people to hold a road, we need to keep them supplied."],
+  'highmere-steward':["I can pass on a message. Keep it short, please.","An audience takes time. An urgent report does not.","Deliveries at the side door. Visitors here.","Tell me your name before I write anything down."],
+  'highmere-servant':["Sorry. Coming through.","Would you move your bag a little? Thank you.","I can fetch someone, if you know who you need.","Wet boots off the runner, please."],
+  'highmere-castle-porter':["Put the heavy end down first.","I'll need to count those before you leave.","If you're looking for the hall, leave the crates to me.","Keep the doorway clear. We've another load coming."],
+  'highmere-scribe':["Spell that for me. I'd rather ask twice than send it to the wrong person.","Ink first, then the signature. People do forget.","There's room on the bench if you're waiting.","Tell me what happened, then we'll find the right form."],
+  'highmere-guild':["Read the terms before you put your name down.","A whole company is cheaper to feed than to replace.","You can take work together. Just agree on the split first.","If the job's changed, tell me. Don't leave it on the old notice."],
+  'highmere-marshal':["Stay where your company can see you.","A charge only works if the person beside you knows it's coming.","Keep a way back open. Even when you're winning.","I need people who listen more than people who shout."],
+  'highmere-smith':["It'll hold. But don't keep using it as a crowbar.","You can have it sharp or you can have it now.","Check the rings under the arm. That's where they tend to go.","Hang it up to dry before you oil it."],
+  'highmere-cook':["Bowls come back here when you're finished.","Don't ask what's in it until you've tried it.","There's water by the door. Wash first.","Hot pot. Make a little room, would you?"],
+  hunt:["I'm keeping an eye on that patch of trees.","No point chasing one straight into the rest of them.","If we go together, let's agree which one we're after.","I'd rather bring back a full bag than a new scar."],
+  gather:["Leave the little ones. They'll be more use later.","I'm nearly done with this patch.","There's enough here for both of us.","I'm checking what I can carry before I collect any more."],
+  sell:["I'm making room in my bag before I go out again.","I'll hear the price before I hand over the supplies.","I'd like to sell this lot without spending it all on the way home.","Some of these supplies were harder to find than I expected."],
+  rest:["I'm staying a little longer. Sit down if you like.","My feet need more of a rest than the rest of me.","I'll be back on the road once I've rested.","Nothing urgent. I'm putting my feet up for a bit."],
+  tavern:["Something hot would do. I'm not fussy.","I'm hoping there's a seat near the fire.","A meal sounds better than another long walk.","I'll think about the next job after I've eaten."],
+  explore:["I want to see what's past the next bend.","I'm trying to remember this road without staring at a map.","You ever head out without taking a job first?","I'm taking the long way. No hurry today."],
+  buyTool:["I'd rather buy one decent axe than keep replacing cheap ones.","I'm checking the handle as well as the price.","No use heading out to cut wood empty-handed.","Something I can sharpen myself would do."],
+  companion:["I'm right behind you.","If you see something, give me a shout.","Need to stop for anything before we go on?","I'll watch this side of the road."],
+  generic:["Yes? What is it?","Give me a moment. Right, I'm listening.","Are you looking for someone?","Hello. What can I help you with?"],
+  injured:["I'm hurt. Give me a moment to catch my breath.","I've had better days. Do you have a bandage?","Not far now. I just need somewhere safe to sit.","I'll manage. Slowly."],
+  fighting:["Stay clear of the blade!","A little help here!","Watch your side!","Keep your eyes on them!"],
+  flee:["Move! They're right behind me!","I'm getting out of here!","Make some room!","I need help over here!"],
+  trusted:["Good to see you again. How have you been?","There you are. I was wondering how you got on.","We work well together. I'd do it again.","You look ready for another long day."],
+};
+
+export const smallTalk={
+  hunter:["I listen for the birds. When they all stop at once, I stop too.","The waiting's easy. It's keeping still that gets me.","I used to hurry every shot. Went hungry quite a lot.","I'd rather walk back with less than get carried back with more."],
+  miner:["A good seam always seems to be just beyond where I stopped digging.","Dust gets everywhere. I found some in my lunch yesterday.","I tap the rock before I swing. Saved me a broken pick more than once.","The first few blows tell you whether it's worth staying."],
+  woodcutter:["You learn which way a tree wants to fall. Usually by being wrong once.","It's the carrying that does me in, not the chopping.","I sharpen before I eat. Otherwise I tell myself I'll do it later.","A dry place to stack timber is worth more than people think."],
+  trader:["A fair deal's useful. A customer who comes back is better.","I count twice when I'm tired. Especially my own change.","Everyone wants a bargain. Nobody wants to carry it home.","I keep a bit aside. There's always something that needs replacing."],
+  explorer:["I draw the turns I miss. My map's mostly mistakes.","I don't mind getting lost, so long as I've eaten first.","Sometimes a road's worth taking just to see where it ends.","I look back now and then. The way home never looks the same."],
+  herbalist:["I used to know plants by their flowers. Not much use in winter.","I keep the roots separate. Saves a lot of trouble later.","The smell stays on your hands. I don't mind it.","People remember the remedy and forget the rest. Water, food, sleep."],
+};
+
+export const guardLines={
+  warning:[name=>`${name}, no fighting in town. Outside. You have ten seconds.`,name=>`${name}, take it outside. Ten seconds, then we move you.`,name=>`${name}, the gate is that way. You have ten seconds to leave.`,name=>`${name}, no armed disputes here. Leave town within ten seconds.`],
+  escalate:["You were warned. Weapons down!","That's enough. Put the weapon down!","Time's up. Stand down!","You had your chance to leave. Drop it!"],
+  attacked:["Back off. Put that weapon away!","You're attacking the watch! Stand down!","Drop the weapon. Now!","Help here! They're attacking us!"],
+};

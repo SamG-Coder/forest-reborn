@@ -56,7 +56,8 @@ test('living guards deal timed damage without flagging themselves; civilians fle
   const move=(person,goal,dt,speed)=>{const direction=goal.clone().sub(person.position);direction.y=0;person.position.addScaledVector(direction.normalize(),speed*dt);return speed;};
   const living=new LivingWorld([guard,worker],[],simulation,nav,move),player={position:new Vector3(0,0,31),dodge:0},combat={hp:100,receive(d){this.hp-=d;}},progress={data:{pvp:flagState({enabled:true})}};
   living.bindPlayer({player,combat,progress,isActive:()=>true,name:'Ren'});living.prepare(.1,1000);assert.equal(living.behaviour(guard,.4,1000),null);
-  living.prepare(.1,11001);living.behaviour(guard,.4,11001);assert.ok(combat.hp<100);assert.equal(guard.target.pvp.enabled,false);
+  living.prepare(.1,11001);living.behaviour(guard,.4,11001);assert.equal(combat.hp,100,'the shared sword windup has not reached contact yet');
+  living.behaviour(guard,.2,11201);assert.ok(combat.hp<100);assert.equal(guard.target.pvp.enabled,false);
   worker.threat=living.player.target;worker.threatUntil=20000;living.prepare(.1,12000);assert.equal(worker.intent.type,'flee');assert.ok(living.behaviour(worker,.1,12000).speed>3);
   living.defeat(worker,13000);assert.equal(worker.target.hp,0);living.prepare(.1,13000+RESIDENT_RESPAWN_MS);assert.equal(worker.target.hp,worker.maxHp);
 });

@@ -1,0 +1,10 @@
+import {chromium} from '@playwright/test';import {writeFile,mkdir} from 'node:fs/promises';
+await mkdir('test-results/town-life',{recursive:true});const browser=await chromium.launch({args:['--enable-gpu','--use-angle=d3d11']});
+try{const page=await browser.newPage({viewport:{width:1600,height:1000}});page.on('pageerror',e=>console.log(e.stack));await page.goto('http://127.0.0.1:5173/');await page.locator('#new-save').click();await page.waitForFunction(()=>window.gameDemo?.ready,null,{timeout:120000});
+await page.evaluate(()=>{const g=gameDemo;g.voices.setMuted(true);g.enter();g.opening.finish();g.dev.teleport(850,-807);g.dev.time(10);});await page.waitForFunction(()=>gameDemo.expansion.zones.get('highmere'),null,{timeout:120000});
+await page.waitForTimeout(2000);
+await page.evaluate(()=>{const g=gameDemo,s=window.profile={frames:[],world:[],population:[],city:[],nav:[],forest:[],last:performance.now()};
+for(const [key,obj,method]of [['world',g.world,'update'],['population',g.population,'update'],['city',g.expansion.zones.get('highmere'),'update'],['nav',g.population.navigation,'route'],['forest',g.world.forest,'update']]){const original=obj[method].bind(obj);obj[method]=(...args)=>{const at=performance.now(),r=original(...args);s[key].push(performance.now()-at);return r;};}
+function frame(now){s.frames.push(now-s.last);s.last=now;s.raf=requestAnimationFrame(frame);}s.raf=requestAnimationFrame(frame);});
+await page.waitForTimeout(12000);const result=await page.evaluate(()=>{cancelAnimationFrame(profile.raf);const out={};for(const key of ['frames','world','population','city','nav','forest']){const a=profile[key].sort((a,b)=>a-b);out[key]={n:a.length,mean:a.reduce((a,b)=>a+b,0)/a.length,p95:a[Math.floor(a.length*.95)],max:a.at(-1)};}out.render=gameDemo.renderer.info.render;out.city=Object.assign(out.city,gameDemo.expansion.zones.get('highmere').stats());return out;});
+console.log(result);await writeFile('test-results/town-life/profile.json',JSON.stringify(result,null,2));}finally{await browser.close();}

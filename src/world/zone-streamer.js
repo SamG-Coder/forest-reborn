@@ -6,7 +6,7 @@ export class ZoneStreamer {
   update(position,dt=0) {
     for(const zone of this.zones){
       const d=zone.definition,distance=Math.hypot(position.x-d.x,position.z-d.z);
-      const wanted=distance<=(zone.wanted?d.leave:d.enter);
+      const wanted=(d.enabled?.()??true)&&distance<=(zone.wanted?d.leave:d.enter);
       if(wanted!==zone.wanted){zone.wanted=wanted;zone.generation++;
         if(wanted)this.load(zone);
         else{zone.runtime?.dispose();zone.runtime=null;zone.status='dormant';}

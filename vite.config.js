@@ -7,7 +7,7 @@ export default defineConfig({
   server: {hmr: false},
   build: {
     rollupOptions: {
-      input: Object.fromEntries(['index', 'game', 'workshop', 'body', 'avatar', 'validation', 'compare', 'gear', 'crowd', 'creatures'].map(name => [name, resolve(import.meta.dirname, `${name}.html`)])),
+      input: Object.fromEntries(['index', 'game', 'workshop', 'body', 'avatar', 'validation', 'compare', 'gear', 'crowd', 'creatures', 'battle'].map(name => [name, resolve(import.meta.dirname, `${name}.html`)])),
     },
   },
 });

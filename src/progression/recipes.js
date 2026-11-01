@@ -1,6 +1,11 @@
 import {insertItem,removeItem} from './inventory.js';
+import {ARCHERY_RECIPES} from './archery-recipes.js';
 
 export const RECIPES=Object.freeze([
+  ...ARCHERY_RECIPES,
+  ...[['scout',2],['guard',4],['veteran',7]].flatMap(([tier,level])=>['head','body','clothes','legs','shoes','necklace','ringLeft','ringRight'].map(slot=>({id:`make-${slot}-${tier}`,name:`Make ${tier} ${slot}`,station:['clothes','legs','shoes'].includes(slot)?'weaver':'forge',skill:['clothes','legs','shoes'].includes(slot)?'tailoring':'smithing',minLevel:level,ingredients:['clothes','legs','shoes'].includes(slot)?{wovenCloth:level,leather:2}:{[tier==='veteran'?'steelIngot':'ironIngot']:level+1,leather:2},output:`${slot}.${tier}`,count:1,xp:level*18,duration:5+level*.5,animation:['clothes','legs','shoes'].includes(slot)?'sew':'hammer'}))),
+  ...[['dagger',1,2],['broadsword',2,4],['sabre',3,4],['spear',3,3],['shortshield',3,4],['longsword',5,6],['greatsword',6,8],['frost',7,7],['ember',8,8],['warden',9,10]].map(([id,level,bars])=>({id:`forge-${id}`,name:`Forge ${id==='shortshield'?'short sword and shield':id}`,station:'forge',skill:'smithing',minLevel:level,ingredients:{[level>4?'steelIngot':'ironIngot']:bars,leather:2,...(['spear','shortshield'].includes(id)?{planks:3}:{}),...(id==='frost'||id==='ember'?{giantRune:1}:{})},output:`weapon.${id}`,count:1,xp:level*20,duration:5+level*.5,animation:'hammer'})),
+  ...['highmere','mosswake','ash','guild'].map(id=>({id:`sew-tabard-${id}`,name:`Sew ${id} tabard`,station:'weaver',skill:'tailoring',minLevel:3,ingredients:{wovenCloth:3,yarn:2},output:`tabard.${id}`,count:1,xp:40,duration:6,animation:'sew'})),
   {id:'steel',name:'Rework tempered steel',station:'forge',skill:'smithing',minLevel:5,ingredients:{steelScrap:3,coal:1},output:'steelIngot',count:1,xp:30,duration:6,animation:'hammer'},
   {id:'field-mail',name:'Rivet Highmere field mail',station:'forge',skill:'smithing',minLevel:7,ingredients:{steelIngot:6,leather:3},output:'body.highmere-mail',count:1,xp:130,duration:9,animation:'hammer'},
   {id:'field-plate',name:'Forge Highmere cuirass',station:'forge',skill:'smithing',minLevel:9,ingredients:{steelIngot:9,leather:3,wovenCloth:3},output:'body.highmere-plate',count:1,xp:180,duration:10,animation:'hammer'},

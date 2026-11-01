@@ -3,8 +3,7 @@ import {createHorse} from './horse-model.js';
 import {mountDefinition} from './catalog.js';
 import {TOWN_PLOTS} from '../world/layout.js';
 import {HIGHMERE_PLOTS,inKeepHall} from '../world/region-layout.js';
-import {solveTwoBone,alignElbowHinge} from '../game/constraints.js';
-import {poseHand} from '../game/hand-poses.js';
+import {applyRiderPose} from './rider-pose.js';
 
 export function indoors(position){
   if(inKeepHall(position.x,position.z))return true;
@@ -56,24 +55,12 @@ export class MountController {
     }
     return true;
   }
-  update(dt){
+  update(dt,state={}){
     if(!this.mounted)return;
     const {horse,player,avatar}=this;horse.root.position.copy(player.position);horse.root.rotation.y=player.yaw;
     horse.update(player.grounded?dt:0,player.speed);this.distance+=player.speed*dt;
     const offset=horse.seatHeight-.94*avatar.root.scale.y;
     player.mountOffset=offset;avatar.root.position.y+=offset+horse.body.position.y*.65;
-    const bones=avatar.rig.bones;bones.hips.position.y=.94;
-    for(const name of ['hips','spine','chest','neck','head'])bones[name].rotation.set(name==='spine'?-.06:0,0,0);
-    avatar.root.updateMatrixWorld(true);
-    const world=(x,y,z)=>avatar.root.localToWorld(new THREE.Vector3(x,y,z));
-    const yaw=new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),player.yaw);
-    for(const [side,s]of [['L',1],['R',-1]]){
-      solveTwoBone(bones['thigh'+side],bones['shin'+side],bones['foot'+side],world(s*.43,.23,.10),world(s*.42,.70,.60),yaw);
-      bones['toe'+side].rotation.set(0,0,0);
-      solveTwoBone(bones['upperArm'+side],bones['forearm'+side],bones['hand'+side],world(s*.20,1.12,.33),world(s*.47,1.13,.13));
-      alignElbowHinge(bones['upperArm'+side],bones['forearm'+side],bones['hand'+side]);bones['hand'+side].quaternion.identity();
-      poseHand(avatar.rig,side,'grip');
-    }
-    avatar.root.updateMatrixWorld(true);
+    applyRiderPose(avatar,state);
   }
 }

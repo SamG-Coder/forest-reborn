@@ -7,6 +7,7 @@ import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js'
 import {PHONE_ATTACHMENT} from './phone-grip.js';
 import {createStreetRain} from './rain.js';
 import {carMotionAt} from './approach-motion.js';
+import {batchStaticMeshes} from '../graphics/static-batches.js';
 
 function signTexture(lines, {background='#192e3c', color='#e6e1cc', width=512,height=256}={}) {
   const canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;const ctx=canvas.getContext('2d');
@@ -27,7 +28,7 @@ export async function createStreet(renderer) {
   const amber=mat('#ffc985',{emissive:'#e9a659',emissiveIntensity:2}),blue=mat('#a7daeb',{emissive:'#99cee8',emissiveIntensity:1.2});
   const windowLit=mat('#adb9c3',{map:windowMap,emissiveMap:windowMap,emissive:'#e6b983',emissiveIntensity:.7,roughness:.18,metalness:.15});
   const windowDim=windowLit.clone();windowDim.color.set('#687c91');windowDim.emissiveIntensity=.12;ownedMaterials.push(windowDim);
-  function box(parent,w,h,d,x,y,z,material,rotation=0){const g=new THREE.BoxGeometry(w,h,d);geometries.push(g);const m=new THREE.Mesh(g,material);m.position.set(x,y,z);m.rotation.y=rotation;m.castShadow=m.receiveShadow=true;parent.add(m);return m;}
+  function box(parent,w,h,d,x,y,z,material,rotation=0){const g=new THREE.BoxGeometry(w,h,d);geometries.push(g);const m=new THREE.Mesh(g,material);m.userData.staticBatch=true;m.position.set(x,y,z);m.rotation.y=rotation;m.castShadow=m.receiveShadow=true;parent.add(m);return m;}
   function sign(parent,lines,w,h,x,y,z,options){const tex=signTexture(lines,options);textures.push(tex);const m=mat('#ffffff',{map:tex,emissive:'#ffffff',emissiveMap:tex,emissiveIntensity:.5});return box(parent,w,h,.025,x,y,z,m);}
   scene.add(new THREE.HemisphereLight('#89a9cf','#16202c',.85));
   const moon=new THREE.DirectionalLight('#a5c9ee',1.1);moon.position.set(-4,12,8);scene.add(moon);
@@ -52,7 +53,7 @@ export async function createStreet(renderer) {
         const lit=((n+5)*7+floor+col)%4!==0;
         const wy=1.7+floor*2,wz=z-2.5+col*2.4;
         const g=new THREE.PlaneGeometry(1.18,1.26);geometries.push(g);
-        const pane=new THREE.Mesh(g,lit?windowLit:windowDim);pane.position.set(side*8.94,wy,wz);pane.rotation.y=-side*Math.PI/2;scene.add(pane);
+        const pane=new THREE.Mesh(g,lit?windowLit:windowDim);pane.userData.staticBatch=true;pane.position.set(side*8.94,wy,wz);pane.rotation.y=-side*Math.PI/2;scene.add(pane);
         for(const edge of [-1,1]){box(scene,.06,1.38,.055,side*8.91,wy,wz+edge*.615,dark);box(scene,.06,.055,1.28,side*8.91,wy+edge*.657,wz,dark);}
         box(scene,.06,1.30,.03,side*8.91,wy,wz,dark);
         box(scene,.12,.05,1.31,side*8.89,wy-.70,wz,white);
@@ -88,6 +89,8 @@ export async function createStreet(renderer) {
   // Drain covers and bollards define the pavement edge at the crossing.
   for(const side of [-1,1])for(const z of [-3.2,3.2]){box(scene,.12,.88,.12,side*6.05,.55,z,dark);box(scene,.13,.05,.13,side*6.05,.79,z,white);for(let i=0;i<6;i++)box(scene,.36,.016,.035,side*5.45,-.02,z+i*.075,dark);}
   const rain=createStreetRain();scene.add(rain.root);
+  scene.userData.batching=batchStaticMeshes(scene,{select:mesh=>mesh.userData.staticBatch&&!mesh.name});
+  geometries.push(...scene.userData.batching.geometries);
   return {scene,car,update(time){
     rain.update(time);
     const motion=carMotionAt(time);car.visible=motion.visible;car.rotation.y=motion.yaw;car.position.set(motion.x,0,motion.z);vehicle.update(time,motion.yaw);

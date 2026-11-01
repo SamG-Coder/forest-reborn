@@ -1,13 +1,15 @@
 import {QUESTS} from './quests.js';
+const givers=new Set(QUESTS.flatMap(q=>[q.giver,q.returnTo??q.giver]));
 
 /** Turn-ins take priority when a giver also has another available quest. */
 export function questMarkerFor(giverId,progress){
+  if(!givers.has(giverId))return '';
   if(QUESTS.some(q=>(q.returnTo??q.giver)===giverId&&progress.state(q)==='ready'))return '?';
   return QUESTS.some(q=>q.giver===giverId&&progress.state(q)==='available')?'!':'';
 }
 
 export function questLocations(residents,progress){
-  return residents.filter(person=>!person.target||person.target.hp>0).flatMap(person=>{
+  return residents.filter(person=>givers.has(person.id)&&(!person.target||person.target.hp>0)).flatMap(person=>{
     const symbol=questMarkerFor(person.id,progress);
     return symbol?[{id:person.id,name:person.name,symbol,x:person.position.x,z:person.position.z}]:[];
   });

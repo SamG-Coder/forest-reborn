@@ -1,3 +1,4 @@
+import {tabardGeometry} from './tabards.js';
 import * as THREE from 'three';
 import {bindAvatarMesh} from '../avatar/rig.js';
 import {ClothPatch} from './cloth.js';
@@ -69,7 +70,7 @@ function shoulderAttachmentWeights(geometry,rig,side){
 }
 export function buildGear(avatar,item,material,templates={},supportSurface=avatar.body.geometry){
   const pattern=item.base.pattern;
-  if(!['shirt','shoes','jeans','tunic','vest','cuirass','trousers','boots','helmet','headwear','necklace','ring'].includes(pattern)){
+  if(!['tabard','shirt','shoes','jeans','tunic','vest','cuirass','trousers','boots','helmet','headwear','necklace','ring'].includes(pattern)){
     material.dispose();throw new Error(`Pattern not built yet: ${pattern}`);
   }
   const group=new THREE.Group();group.name=item.id;const meshes=[],patches=[],ownedMaterials=[material];
@@ -83,7 +84,9 @@ export function buildGear(avatar,item,material,templates={},supportSurface=avata
     mesh.userData.partEnabled=garmentPartEnabled(item,name);mesh.userData.part=name;
     mesh.castShadow=true;mesh.receiveShadow=true;group.add(mesh);meshes.push(mesh);return mesh;
   }
-  if(pattern==='shirt'){
+  if(pattern==='tabard'){
+    add(tabardGeometry(),'heraldic-shell');
+  }else if(pattern==='shirt'){
     add(shirtShell(templates.tunic),'sewn-shell');
     add(templates.collarFacing.clone(),'collar-facing');
     const collar=new THREE.TorusGeometry(.087,.004,8,40);collar.rotateX(Math.PI/2);collar.scale(1,1,.84);collar.translate(0,1.525,-.026);add(collar,'neckband');

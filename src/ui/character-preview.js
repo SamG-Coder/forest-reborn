@@ -1,3 +1,4 @@
+import {isWeapon,weaponDefinition} from '../game/weapon-catalog.js';
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {createHumanoid} from '../npc/humanoid.js';
@@ -23,6 +24,7 @@ export function createCharacterPreview(template,registry,materials,progress,appe
     const key=JSON.stringify([progress.data.equipped,progress.data.weapon,appearance]);
     if(key!==lastKey){lastKey=key;actor.avatar.bodySystem.setType(appearance.bodyType??'male');actor.wardrobe.apply(progress.data.equipped);actor.avatar.materials.setFace(appearance.face);actor.avatar.materials.setEye(appearance.eyes);actor.avatar.materials.setSkin(appearance.skin);actor.avatar.materials.setBody(appearance.body);hair.setStyle(appearance.hair);hair.setColor(appearance.hairColor);hair.setHeadwear(actor.wardrobe.entries.get('head')?.definition);}
     const w=mount.clientWidth,h=mount.clientHeight;if(renderer.domElement.width!==Math.round(w*renderer.getPixelRatio())||renderer.domElement.height!==Math.round(h*renderer.getPixelRatio())){renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
-    actor.update(Math.min(dt,.05),{armed:progress.data.weapon==='sword'});controls.update();renderer.render(scene,camera);
+    actor.weapon.setWeapon(progress.data.weapon);
+    actor.update(Math.min(dt,.05),{armed:isWeapon(progress.data.weapon),weaponId:progress.data.weapon});controls.update();renderer.render(scene,camera);
   }};
 }

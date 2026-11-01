@@ -1,3 +1,4 @@
+import {setMapDestination} from '../npc/directions.js';
 import {MapView,bindMapInput} from './map-view.js';
 import {TerrainMap} from './terrain-map.js';
 import {MONSTER_ICONS,drawMonsterIcon} from './map-icons.js';
@@ -5,6 +6,8 @@ import {ROAD_PATHS,TOWN_PLOTS} from '../world/layout.js';
 import {HIGHMERE,HIGHMERE_WALL,HIGHMERE_ROADS,HIGHMERE_PLOTS,KEEP_FOOTPRINTS} from '../world/region-layout.js';
 import {LANDMARKS} from '../world/terrain.js';
 import {questLocations,drawQuestMarker,questMarkerLabel} from '../progression/quest-markers.js';
+import {CAMP_DEFINITIONS} from '../world/camp-director.js';
+import {MUSTER_CAMPS} from '../world/battle-sites.js';
 
 const terrain=new TerrainMap();
 const roads=[...ROAD_PATHS,...HIGHMERE_ROADS],plots=[...TOWN_PLOTS,...HIGHMERE_PLOTS];
@@ -17,13 +20,14 @@ export function createInteractiveMap({container,player,population,progress,works
   const bar=document.createElement('div');bar.className='map-controls';
   const recenter=document.createElement('button');recenter.type='button';recenter.textContent='Centre on me';recenter.title='Follow your character again';
   const scaleLabel=document.createElement('span');scaleLabel.className='map-scale';bar.append(scaleLabel,recenter);
+  const clear=document.createElement('button');clear.type='button';clear.textContent='Clear pin';bar.append(clear);clear.onclick=()=>{setMapDestination(progress,null);draw();};
   const tip=document.createElement('div');tip.className='map-hover';tip.hidden=true;
   const hint=document.createElement('small');hint.className='map-hint';hint.textContent='Scroll to zoom · Drag to explore';
   frame.append(canvas,tip,bar,hint);container.append(frame);
   const legend=document.createElement('div');legend.className='map-legend';
   for(const kind of ['rabbit','goblin','bandit','ogre']){const entry=document.createElement('span'),icon=document.createElement('canvas');icon.width=40;icon.height=40;const c=icon.getContext('2d');c.scale(2,2);drawMonsterIcon(c,10,10,kind,8);entry.append(icon,MONSTER_ICONS[kind].label);legend.append(entry);}
   const quests=document.createElement('span');quests.className='quest-map-key';quests.textContent='! Quest  ·  ? Turn in';legend.append(quests);container.append(legend);
-  let hits=[],lastTime=-1,disposed=false,destination=null;
+  let hits=[],lastTime=-1,disposed=false;
   const visible=p=>p.x>-20&&p.y>-20&&p.x<size+20&&p.y<size+20;
   const dot=(p,color,r=2)=>{ctx.fillStyle=color;ctx.strokeStyle='#1e322d';ctx.lineWidth=1;ctx.beginPath();ctx.arc(p.x,p.y,r,0,Math.PI*2);ctx.fill();ctx.stroke();};
   function draw(){
@@ -34,16 +38,28 @@ export function createInteractiveMap({container,player,population,progress,works
     ctx.strokeStyle='#d6d2b8';ctx.lineWidth=Math.max(1.3,1.9*scale);ctx.beginPath();HIGHMERE_WALL.forEach(([x,z],i)=>{const p=view.project(x+HIGHMERE.x,z+HIGHMERE.z);if(i)ctx.lineTo(p.x,p.y);else ctx.moveTo(p.x,p.y);});ctx.closePath();ctx.stroke();
     for(const keep of KEEP_FOOTPRINTS){const p=view.project(HIGHMERE.x+keep.x,HIGHMERE.z+keep.z);if(!visible(p))continue;ctx.fillStyle='#b9b8a7';ctx.strokeStyle='#394947';ctx.lineWidth=1;ctx.beginPath();if(keep.r)ctx.arc(p.x,p.y,keep.r*scale,0,Math.PI*2);else ctx.rect(p.x-keep.w*scale/2,p.y-keep.d*scale/2,keep.w*scale,keep.d*scale);ctx.fill();ctx.stroke();hits.push({...p,label:'Highmere keep · Great hall'});}
     {const p=view.project(800,-829);if(visible(p)){dot(p,'#97ab5d',Math.max(2,8*scale));hits.push({...p,label:'The old oak'});}}
-    if(!compact||view.range>180){ctx.font='600 12px Manrope, sans-serif';ctx.textAlign='center';ctx.textBaseline='bottom';for(const mark of LANDMARKS){const p=view.project(mark.x,mark.z);if(!visible(p))continue;if(view.range>500&&!['town','highmere','highmere-field','ridge'].includes(mark.id))continue;ctx.strokeStyle='#20372cea';ctx.lineWidth=3;ctx.strokeText(mark.name,p.x,p.y-13);ctx.fillStyle='#f2ead2';ctx.fillText(mark.name,p.x,p.y-13);}}
-    for(const person of population.residents){if(person.target.hp<=0)continue;const p=view.project(person.position.x,person.position.z);if(!visible(p))continue;dot(p,person.type==='adventurer'?'#9fd8f4':'#d2e9a8',compact?2:2.8);hits.push({...p,label:person.name+' · '+person.role});}
+    if(!compact||view.range>180){ctx.font='600 12px Manrope, sans-serif';ctx.textAlign='center';ctx.textBaseline='bottom';for(const mark of LANDMARKS){if(['cart-road-raid','briar-raid'].includes(mark.id)||mark.id==='northern-battle'&&!population.battleDirector?.canStage())continue;const p=view.project(mark.x,mark.z);if(!visible(p))continue;if(view.range>500&&!['town','highmere','highmere-field','northern-battle','ashhold','ridge'].includes(mark.id))continue;ctx.strokeStyle='#20372cea';ctx.lineWidth=3;ctx.strokeText(mark.name,p.x,p.y-13);ctx.fillStyle='#f2ead2';ctx.fillText(mark.name,p.x,p.y-13);}}
+    for(const camp of [...CAMP_DEFINITIONS,...(population.battleDirector?.canStage()?MUSTER_CAMPS:[])]){
+      const p=view.project(camp.x,camp.z);if(!visible(p))continue;ctx.fillStyle=camp.color??'#e4ad6e';ctx.strokeStyle='#293b32';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(p.x,p.y-6);ctx.lineTo(p.x-7,p.y+5);ctx.lineTo(p.x+7,p.y+5);ctx.closePath();ctx.fill();ctx.stroke();hits.push({...p,label:camp.name+' · '+(camp.faction==='briar'?'Goblin camp':camp.faction==='bandits'?'Bandit camp':'Muster camp')});
+    }
+    for(const encounter of population.townLife?.encounters()??[]){
+      const p=view.project(encounter.x,encounter.z);if(!visible(p))continue;
+      ctx.strokeStyle='#efbc76aa';ctx.lineWidth=1.5;ctx.setLineDash([3,4]);ctx.beginPath();encounter.route.forEach((waypoint,i)=>{const q=view.project(waypoint.x,waypoint.z);if(i)ctx.lineTo(q.x,q.y);else ctx.moveTo(q.x,q.y);});ctx.stroke();ctx.setLineDash([]);
+      dot(p,'#cf684f',7);ctx.font='bold 12px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#fff4d2';ctx.fillText('⚔',p.x,p.y);hits.push({...p,label:encounter.name+' · '+encounter.phase+' · '+encounter.members+' raiders'});
+    }
+    for(const person of population.residents){if(person.target.externalSimulation||person.target.hp<=0)continue;const p=view.project(person.position.x,person.position.z);if(!visible(p))continue;dot(p,person.type==='adventurer'?'#9fd8f4':'#d2e9a8',compact?2:2.8);hits.push({...p,label:person.name+' · '+person.role});}
+    const companies=new Map();for(const t of population.targets)if(t.externalSimulation&&t.hp>0){const key=t.zoneId+':'+t.squad;if(!companies.has(key))companies.set(key,{x:0,z:0,count:0,team:t.team,name:t.person?.role});const c=companies.get(key);c.x+=t.position.x;c.z+=t.position.z;c.count++;}
+    for(const c of companies.values()){const p=view.project(c.x/c.count,c.z/c.count);if(!visible(p))continue;dot(p,c.team?'#d47b68':'#81b8e3',4);hits.push({...p,label:c.name+' · '+c.count+' standing'});}
     // Cluster close units by species, preserving a readable, distinct silhouette for each type.
     const clusters=new Map(),cell=compact?24:27;
-    for(const target of population.targets){if(target.hp<=0)continue;const p=view.project(target.position.x,target.position.z);if(!visible(p))continue;const key=`${target.kind}:${Math.floor(p.x/cell)}:${Math.floor(p.y/cell)}`;const cluster=clusters.get(key);if(cluster){cluster.x+=p.x;cluster.y+=p.y;cluster.count++;}else clusters.set(key,{x:p.x,y:p.y,count:1,kind:target.kind,name:target.name,level:target.level});}
+    for(const target of population.targets){if(target.externalSimulation||target.hp<=0)continue;const p=view.project(target.position.x,target.position.z);if(!visible(p))continue;const key=`${target.kind}:${Math.floor(p.x/cell)}:${Math.floor(p.y/cell)}`;const cluster=clusters.get(key);if(cluster){cluster.x+=p.x;cluster.y+=p.y;cluster.count++;}else clusters.set(key,{x:p.x,y:p.y,count:1,kind:target.kind,name:target.name,level:target.level});}
     for(const c of clusters.values()){const x=c.x/c.count,y=c.y/c.count;drawMonsterIcon(ctx,x,y,c.kind,compact?8:10);if(c.count>1){ctx.font='bold 9px sans-serif';ctx.textAlign='left';ctx.strokeStyle='#172e29';ctx.lineWidth=3;ctx.strokeText(String(c.count),x+6,y+9);ctx.fillStyle='#fff1cc';ctx.fillText(String(c.count),x+6,y+9);}hits.push({x,y,label:`${c.name} · Level ${c.level}${c.count>1?' · '+c.count+' nearby':''}`});}
     for(const station of workstations?.stations??[]){const p=view.project(station.x??station.position?.x??station.root?.position.x,station.z??station.position?.z??station.root?.position.z);if(!visible(p))continue;ctx.fillStyle='#97d1df';ctx.strokeStyle='#21464c';ctx.lineWidth=1.3;ctx.beginPath();ctx.moveTo(p.x,p.y-4);ctx.lineTo(p.x+4,p.y);ctx.lineTo(p.x,p.y+4);ctx.lineTo(p.x-4,p.y);ctx.closePath();ctx.fill();ctx.stroke();hits.push({...p,label:station.name??station.building});}
     const event=population.simulation.society.event;if(event){const p=view.project(event.x,event.z);if(visible(p)){dot(p,'#f2b76d',6);hits.push({...p,label:event.title});}}
     const markers=questLocations(population.residents,progress).filter(marker=>visible(view.project(marker.x,marker.z)));
     for(const marker of markers){const p=view.project(marker.x,marker.z);drawQuestMarker(ctx,p.x,p.y-8,marker.symbol,compact?18:22);hits.push({x:p.x,y:p.y-8,label:questMarkerLabel(marker)});}
+    const destination=progress.data.mapPin;clear.hidden=!destination;
+    if(destination?.encounterId){const encounter=population.townLife?.encounters().find(e=>e.id===destination.encounterId);if(encounter){destination.x=encounter.x;destination.z=encounter.z;}}
     if(destination){const p=view.project(destination.x,destination.z);if(visible(p)){dot(p,'#ffe08c',8);ctx.strokeStyle='#ffdb8c';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,14,0,Math.PI*2);ctx.stroke();hits.push({...p,label:destination.name+' · '+destination.place});}}
     const own=view.project(player.position.x,player.position.z);
     if(visible(own)){ctx.save();ctx.translate(own.x,own.y);ctx.rotate(-player.yaw);ctx.fillStyle='#fff2bd';ctx.strokeStyle='#223e3a';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,9);ctx.lineTo(-6,-6);ctx.lineTo(0,-3);ctx.lineTo(6,-6);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore();}
@@ -57,5 +73,5 @@ export function createInteractiveMap({container,player,population,progress,works
   canvas.addEventListener('pointermove',e=>{if(e.buttons){tip.hidden=true;return;}const r=canvas.getBoundingClientRect(),x=(e.clientX-r.left)*size/r.width,y=(e.clientY-r.top)*size/r.height;const hit=hits.findLast(h=>Math.hypot(h.x-x,h.y-y)<13);tip.hidden=!hit;if(hit)tip.textContent=hit.label;});
   canvas.addEventListener('pointerleave',()=>tip.hidden=true);
   draw();
-  return {view,canvas,draw,setDestination(point){destination=point;view.following=false;view.x=point.x;view.z=point.z;view.range=100;draw();},update(time){if(time-lastTime>=.2){lastTime=time;draw();}},dispose(){disposed=true;unbind();frame.remove();legend.remove();}};
+  return {view,canvas,draw,setDestination(point){setMapDestination(progress,point);view.following=false;view.x=point.x;view.z=point.z;view.range=100;draw();},update(time){if(time-lastTime>=.2){lastTime=time;draw();}},dispose(){disposed=true;unbind();frame.remove();legend.remove();}};
 }

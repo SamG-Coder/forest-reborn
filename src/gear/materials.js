@@ -1,3 +1,4 @@
+import {tabardTexture} from './tabards.js';
 import {loadTexture} from '../assets/load-texture.js';
 import {publicUrl} from '../assets/public-url.js';
 import * as THREE from 'three';
@@ -29,7 +30,7 @@ export async function loadGearMaterials(){
     create(item){
       const family=MATERIAL_FAMILIES[item.material],maps=textures[item.finish&&item.finish!=='plain'?item.finish:family.map],resource=item.resource?metalResource(item.resource):null;
       if(!maps)throw new Error(`Unknown material finish: ${item.finish}`);
-      const props={color:resource?.color??item.color,map:maps.map,normalMap:maps.normalMap,normalScale:new THREE.Vector2(.38,.38),side:THREE.DoubleSide};
+      const props={color:item.base.pattern==='tabard'?'#ffffff':resource?.color??item.color,map:item.base.pattern==='tabard'?tabardTexture(item):maps.map,normalMap:maps.normalMap,normalScale:new THREE.Vector2(.38,.38),side:THREE.DoubleSide};
       const material=family.metalness>0?new THREE.MeshStandardMaterial({...props,metalness:resource?.metalness??family.metalness,roughness:resource?Math.min(1,resource.roughness/.6):1,roughnessMap:maps.roughnessMap,envMapIntensity:.5}):new THREE.MeshToonMaterial({...props,gradientMap:ramp});
       material.name=`gear.${item.material}`;return material;
     },

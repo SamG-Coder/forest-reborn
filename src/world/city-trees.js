@@ -5,7 +5,7 @@ import {terrainHeight} from './terrain.js';
 /** One broad forked oak is a city landmark; smaller courtyard trees frame it. */
 export function createCityTrees(parent,materials,textures){
   const root=new THREE.Group();root.name='Highmere courtyard trees';parent.add(root);const colliders=[],owned=[],crowns=[];
-  for(const [index,spec]of [{x:800,z:-829,scale:1.65},{x:909,z:-806,scale:.8},{x:773,z:-879,scale:.7}].entries()){
+  for(const [index,spec]of [{x:800,z:-829,scale:1.65},{x:909,z:-806,scale:.8},{x:773,z:-879,scale:.7},{x:837,z:-853,scale:.7},{x:869,z:-864,scale:.8},{x:832,z:-794,scale:.66}].entries()){
     const tree=new THREE.Group();tree.position.set(spec.x,terrainHeight(spec.x,spec.z),spec.z);tree.scale.setScalar(spec.scale);root.add(tree);
     const parts=[];
     const branch=(points,radius)=>{

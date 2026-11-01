@@ -39,13 +39,18 @@ export function createRoadGrading(roads,heightAt,{grade=.18,spacing=3,verge=14}=
     }
   }
   return {nodes,edges,height(x,z,landscape){
-    let nearest=Infinity,height=landscape,width=0,outside=Infinity;
+    let weightedHeight=0,totalWeight=0,blend=0;
     for(const edge of cells.get(`${Math.floor(x/cellSize)}:${Math.floor(z/cellSize)}`)??[]){
       const dx=edge.b.x-edge.a.x,dz=edge.b.z-edge.a.z,t=clamp(((x-edge.a.x)*dx+(z-edge.a.z)*dz)/(edge.length**2),0,1);
       const distance=Math.hypot(x-edge.a.x-t*dx,z-edge.a.z-t*dz);
-      if(distance<nearest){nearest=distance;outside=Math.max(0,distance-edge.width/2);height=edge.a.h+(edge.b.h-edge.a.h)*t;width=edge.width;}
+      const outside=Math.max(0,distance-edge.width/2),influence=1-smooth(outside/verge);
+      if(influence<=0)continue;
+      // Blend overlapping road verges. Picking one nearest segment introduced
+      // cliffs at its Voronoi boundary, especially next to a rising side street.
+      const weight=influence/Math.pow(4+distance,3);
+      weightedHeight+=(edge.a.h+(edge.b.h-edge.a.h)*t)*weight;totalWeight+=weight;blend=Math.max(blend,influence);
     }
-    if(outside>=verge||!width)return landscape;
-    const blend=1-smooth(outside/verge);return landscape+(height-landscape)*blend;
+    if(totalWeight===0)return landscape;
+    return landscape+(weightedHeight/totalWeight-landscape)*blend;
   }};
 }

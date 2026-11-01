@@ -1,0 +1,7 @@
+.game-menu .game-menu-card{max-height:calc(100dvh - 40px);overflow:auto}
+.game-menu .audio-settings{text-align:left;border:1px solid #9c875755;border-radius:4px;margin:12px 0;padding:10px 12px;color:#e7d9bd}
+.game-menu .audio-settings summary{cursor:pointer;font-size:15px;font-weight:600}
+.game-menu .audio-settings p{font-size:12px!important;line-height:1.5;color:#b8c5c6;margin:9px 0}
+.game-menu .audio-settings label{display:grid;grid-template-columns:1fr auto;gap:4px;margin:8px 0;font-size:13px;letter-spacing:normal}
+.game-menu .audio-settings input[type=range]{grid-column:1/-1;width:100%;padding:0;margin:0;height:18px;accent-color:#c5ab70;background:none;border:0}
+.game-menu .audio-settings button{font-size:12px;margin-top:8px;padding:6px 9px}

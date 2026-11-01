@@ -1,5 +1,5 @@
 import {element,itemImage,meter} from './panel-components.js';
-export function renderAdventurerSocial({person,sim,progress,body,text,button,refresh,message}){
+export function renderAdventurerSocial({person,sim,progress,body,text,button,refresh,message,dialogue,onSpeak}){
   const actor=person.data,society=sim.society,relations=society.relationships;
   const card=element(body,'section','social-card');
   const originalButton=button,appendButton=(label,callback)=>{const node=originalButton(label,callback);card.append(node);return node;};
@@ -9,7 +9,11 @@ export function renderAdventurerSocial({person,sim,progress,body,text,button,ref
   meter(card,relations.trust('player',actor.id),100,`${relations.label('player',actor.id)} · Trust ${relations.trust('player',actor.id)} / 100`);
   text('The friends list keeps their contact. Trust comes from time together and keeping your word.');
   const action=callback=>()=>{callback();sim.save();refresh();};
-  button('Talk for a moment',action(()=>message(`${actor.name}: “${relations.chat(actor,Date.now())}”`,6)));
+  button('Talk for a moment',()=>{
+    const now=Date.now();relations.chat(actor,now);sim.save();
+    const line=dialogue?.select(person,{channel:'chat',now});
+    if(line){let reply=card.querySelector('.chat-response');if(!reply)reply=element(card,'p','chat-response');reply.textContent=line.text;if(line.speak)onSpeak?.(person,line.text);}
+  });
   const favour=relations.favours[actor.id];
   if(!favour){text(relations.offer(actor).offer);button('Offer to help',action(()=>relations.accept(actor)));}
   else if(favour.status==='active'){
